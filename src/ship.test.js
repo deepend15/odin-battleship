@@ -27,7 +27,7 @@ test('getShips() array contains ships that each have a "hits" property that init
   }
 });
 
-test('getShips() array contains ships that each have a "isSunk" property that initiates with value "no"', () => {
+test('getShips() array contains ships that each have an "isSunk" property that initiates with value "no"', () => {
   const ships = ship.getShips();
   for (const ship of ships) {
     const { isSunk } = ship;
