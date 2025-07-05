@@ -27,6 +27,6 @@
     "deploy": "git subtree push --prefix dist origin gh-pages",
     "push": "git push origin main",
     "test": "jest --verbose",
-    "watch": "jest --verbose --watch *.js"
+    "watch": "jest --verbose --watchAll"
   }
 }
