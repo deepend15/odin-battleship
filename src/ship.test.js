@@ -12,25 +12,40 @@ test("getShips() array contains ships with lengths of 5, 4, 3, 3, and 2", () => 
   expect(shipLengths).toEqual[(5, 4, 3, 3, 2)];
 });
 
-test('getShips() array contains ships that each have an "id" property', () => {
+test('Each ship in getShips() has an "id" property', () => {
   const ships = ship.getShips();
   for (const ship of ships) {
     expect(Object.keys(ship)).toContain("id");
   }
 });
 
-test('getShips() array contains ships that each have a "hits" property that initiates with value "0"', () => {
+test('Each ship in getShips() has a "hits" property that initiates with value "0"', () => {
   const ships = ship.getShips();
   for (const ship of ships) {
-    const { hits } = ship;
-    expect(hits).toBe(0);
+    expect(ship.hits).toBe(0);
   }
 });
 
-test('getShips() array contains ships that each have an "isSunk" property that initiates with value "no"', () => {
+test('Each ship in getShips() has an isSunk() method that initiates with return value "no"', () => {
   const ships = ship.getShips();
   for (const ship of ships) {
-    const { isSunk } = ship;
-    expect(isSunk).toBe("no");
+    expect(ship.isSunk()).toBe("no");
   }
 });
+
+test("Each ship in getShips() has a hit() method that increases its hit value by 1", () => {
+  const ships = ship.getShips();
+  ships.forEach((ship) => {
+    const startingHits = ship.hits;
+    ship.hit();
+    expect(ship.hits).toBe(startingHits + 1);
+  });
+});
+
+test(`When a ship's hits value equals its length, isSunk() returns "yes"`, () => {
+  const ships = ship.getShips();
+  ships.forEach((ship) => {
+    ship.hits = ship.length;
+    expect(ship.isSunk()).toBe("yes");
+  })
+})
