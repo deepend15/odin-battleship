@@ -91,6 +91,11 @@ test("gameboard.placeShip() allows valid coordinates in any order, i.e. gameboar
   firstFiveSquares.forEach((square) => {
     expect(square).toBe("5");
   });
+  const secondShipArray = ship.getShips().filter((ship) => ship.id === "2");
+  const secondShip = secondShipArray[0];
+  gameboard.placeShip(secondShip, [5, 4], [4, 4]);
+  expect(board[4][4]).toBe("2");
+  expect(board[5][4]).toBe("2");
 });
 
 test("gameboard.clearBoard() clears the board", () => {
