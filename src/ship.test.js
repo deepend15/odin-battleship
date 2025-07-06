@@ -26,13 +26,6 @@ test('Each ship in getShips() has a "hits" property that initiates with value "0
   }
 });
 
-test('Each ship in getShips() has an isSunk() method that initiates with return value "no"', () => {
-  const ships = ship.getShips();
-  for (const ship of ships) {
-    expect(ship.isSunk()).toBe("no");
-  }
-});
-
 test("Each ship in getShips() has a hit() method that increases its hit value by 1", () => {
   const ships = ship.getShips();
   ships.forEach((ship) => {
@@ -40,6 +33,13 @@ test("Each ship in getShips() has a hit() method that increases its hit value by
     ship.hit();
     expect(ship.hits).toBe(startingHits + 1);
   });
+});
+
+test('Each ship in getShips() has an isSunk() method that initiates with return value "no"', () => {
+  const ships = ship.getShips();
+  for (const ship of ships) {
+    expect(ship.isSunk()).toBe("no");
+  }
 });
 
 test(`When a ship's hits value equals its length, isSunk() returns "yes"`, () => {
