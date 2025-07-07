@@ -1,3 +1,5 @@
+import { ship } from "./ship.js";
+
 export const gameboard = (function () {
   const rows = 10;
   const columns = 10;
@@ -9,8 +11,6 @@ export const gameboard = (function () {
       board[i].push(null);
     }
   }
-
-  // const getBoard = () => console.log(board);
 
   const getBoard = () => board;
 
@@ -81,7 +81,7 @@ export const gameboard = (function () {
       if (board[square[0]][square[1]] !== null) {
         throw new Error("Coordinates already occupied!");
       }
-      board[square[0]][square[1]] = ship.id;
+      board[square[0]][square[1]] = [ship.id];
     });
   }
 
@@ -93,5 +93,51 @@ export const gameboard = (function () {
     });
   }
 
-  return { getBoard, placeShip, clearBoard };
+  function receiveAttack([x, y]) {
+    const ships = ship.getShips();
+    const shipIDs = ships.map((ship) => ship.id);
+
+    if (board[x][y] === null) {
+      board[x][y] = ["miss"];
+      return;
+    }
+
+    if (board[x][y].includes("miss")) {
+      throw new Error("Can't attack this spot");
+    }
+
+    shipIDs.forEach((id) => {
+      if (board[x][y].includes(id)) {
+        if (board[x][y].includes("hit")) {
+          throw new Error("Can't attack this spot");
+        }
+        const hitShipArray = ships.filter((ship) => ship.id === id);
+        const hitShip = hitShipArray[0];
+        hitShip.hit();
+        board[x][y].push("hit");
+        if (hitShip.isSunk()) {
+          board.forEach((row) => {
+            row.forEach((square) => {
+              if (Array.isArray(square)) {
+                if (square.includes(id)) square.push("is sunk");
+              }
+            });
+          });
+        }
+        return;
+      }
+    });
+  }
+
+  function allShipsSunk() {
+    const ships = ship.getShips();
+
+    for (let i = 0; i < ships.length; i++) {
+      if (!ships[i].isSunk()) return false;
+    }
+
+    return true;
+  }
+
+  return { getBoard, placeShip, clearBoard, receiveAttack, allShipsSunk };
 })();
