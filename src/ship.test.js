@@ -35,17 +35,17 @@ test("Each ship in getShips() has a hit() method that increases its hit value by
   });
 });
 
-test('Each ship in getShips() has an isSunk() method that initiates with return value "no"', () => {
+test('Each ship in getShips() has an isSunk() method that initially returns false', () => {
   const ships = ship.getShips();
   for (const ship of ships) {
-    expect(ship.isSunk()).toBe("no");
+    expect(ship.isSunk()).toBeFalsy;
   }
 });
 
-test(`When a ship's hits value equals its length, isSunk() returns "yes"`, () => {
+test(`When a ship's hits value equals its length, isSunk() returns true`, () => {
   const ships = ship.getShips();
   ships.forEach((ship) => {
     ship.hits = ship.length;
-    expect(ship.isSunk()).toBe("yes");
+    expect(ship.isSunk()).toBeTruthy;
   })
 })

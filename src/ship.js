@@ -1,12 +1,12 @@
 export const ship = (function () {
   function createShip() {
     function isSunk() {
-      if (this.hits < this.length) return "no";
-      else return "yes";
+      if (this.hits < this.length) return false;
+      else return true;
     }
 
     function hit() {
-      if (this.isSunk() === "no") this.hits += 1;
+      if (!this.isSunk()) this.hits += 1;
     }
 
     let hits = 0;
