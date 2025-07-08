@@ -1,4 +1,4 @@
-export const ship = (function () {
+export function createShips() {
   function createShip() {
     function isSunk() {
       if (this.hits < this.length) return false;
@@ -25,4 +25,4 @@ export const ship = (function () {
   const getShips = () => ships;
 
   return { getShips };
-})();
+}
