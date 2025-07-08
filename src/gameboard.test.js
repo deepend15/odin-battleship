@@ -51,7 +51,7 @@ describe("Gameboard test suite", () => {
     expect(board[4][5]).toContain("2");
   });
 
-  test("The gameboard contains a placeShip() method that places a ship on the gameboard in a column", () => {
+  test("The placeShip() method places a ship on the gameboard in a column", () => {
     gameboard.placeShip(fiveShip, [0, 0], [4, 0]);
     const firstColumn = [];
     board.forEach((row) => {
@@ -140,7 +140,7 @@ describe("Gameboard test suite", () => {
     expect(twoShip.isSunk()).toBeTruthy;
   });
 
-  test("If the gameboard receives an attack that sinks a ship, value 'is sunk' is added to that space on the board", () => {
+  test("If the gameboard receives an attack that sinks a ship, value 'is sunk' is added to all spaces on the board occupied by that ship", () => {
     gameboard.placeShip(twoShip, [0, 0], [0, 1]);
     gameboard.receiveAttack([0, 0]);
     gameboard.receiveAttack([0, 1]);
