@@ -1,9 +1,10 @@
-import { ship } from "./ship.js";
+import { createShips } from "./ship.js";
 
-export const gameboard = (function () {
+export function createGameboard() {
   const rows = 10;
   const columns = 10;
   const board = [];
+  const ships = createShips().getShips();
 
   for (let i = 0; i < rows; i++) {
     board[i] = [];
@@ -57,8 +58,6 @@ export const gameboard = (function () {
       }
     }
 
-    const board = gameboard.getBoard();
-
     const squares = [firstCoordinate];
 
     let x = firstCoordinate[0];
@@ -94,7 +93,6 @@ export const gameboard = (function () {
   }
 
   function receiveAttack([x, y]) {
-    const ships = ship.getShips();
     const shipIDs = ships.map((ship) => ship.id);
 
     if (board[x][y] === null) {
@@ -130,8 +128,6 @@ export const gameboard = (function () {
   }
 
   function allShipsSunk() {
-    const ships = ship.getShips();
-
     for (let i = 0; i < ships.length; i++) {
       if (!ships[i].isSunk()) return false;
     }
@@ -139,5 +135,12 @@ export const gameboard = (function () {
     return true;
   }
 
-  return { getBoard, placeShip, clearBoard, receiveAttack, allShipsSunk };
-})();
+  return {
+    ships,
+    getBoard,
+    placeShip,
+    clearBoard,
+    receiveAttack,
+    allShipsSunk,
+  };
+}
