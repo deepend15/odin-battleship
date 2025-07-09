@@ -13,6 +13,40 @@ export const displayController = (function () {
     const activePlayer = game.getActivePlayer();
     const opponent = game.getOpponent();
 
+    // create game info text & add to gameDiv
+
+    const infoDiv = document.createElement("div");
+    infoDiv.classList.add("info-div");
+    const infoDivPlayersDiv = document.createElement("div");
+    infoDivPlayersDiv.classList.add("info-div-players");
+    const infoDivPlayersActivePlayer = document.createElement("p");
+    infoDivPlayersActivePlayer.textContent = `Active player: ${activePlayer.name}`;
+    const infoDivPlayersOpponent = document.createElement("p");
+    infoDivPlayersOpponent.textContent = `Opponent: ${opponent.name}`;
+    infoDivPlayersDiv.append(
+      infoDivPlayersActivePlayer,
+      infoDivPlayersOpponent,
+    );
+    const infoDivTextDiv = document.createElement("div");
+    infoDivTextDiv.classList.add("info-div-text-div");
+    const infoDivTextDivFirstLine = document.createElement("p");
+    infoDivTextDivFirstLine.textContent = `Click a square on your opponent's board to attack that square!`;
+    const infoDivTextDivSecondLine = document.createElement("p");
+    infoDivTextDivSecondLine.textContent = `-If your opponent has a ship occupying that square, their ship will receive a hit`;
+    const infoDivTextDivThirdLine = document.createElement("p");
+    infoDivTextDivThirdLine.textContent = `-If you hit all of the squares containing one of your opponent's ships, you'll sink that ship!`;
+    const infoDivTextDivFourthLine = document.createElement("p");
+    infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other's ships on the board`;
+    infoDivTextDiv.append(
+      infoDivTextDivFirstLine,
+      infoDivTextDivSecondLine,
+      infoDivTextDivThirdLine,
+      infoDivTextDivFourthLine,
+    );
+
+    infoDiv.append(infoDivPlayersDiv, infoDivTextDiv);
+    gameDiv.append(infoDiv);
+
     // create opponent board side of webpage
 
     const opponentSection = document.createElement("div");

@@ -42,9 +42,9 @@ h5 {
 }
 
 .main-container {
-  padding: 20px;
+  padding: 20px 50px;
   display: grid;
-  gap: 30px;
+  gap: 35px;
   justify-items: center;
 }
 
@@ -55,10 +55,34 @@ h1 {
 
 .game-div {
   display: flex;
-  column-gap: 90px;
+  column-gap: 55px;
   row-gap: 30px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.info-div {
+  display: grid;
+  gap: 25px;
+  flex-basis: 200px;
+  flex-grow: 1;
+  line-height: 1.5;
+  font-size: 1.7rem;
+}
+
+.info-div-players {
+  justify-self: start;
+}
+
+.info-div-text-div > p:first-child {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.info-div-text-div > p:not(:first-child) {
+  margin-bottom: 15px;
 }
 
 .opponent-section,
