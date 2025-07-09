@@ -1,10 +1,11 @@
 import { expect, test } from "@jest/globals";
 import { game } from "./game.js";
 
-test("The game factory function creates a game object with methods getPlayer1(), getPlayer2(), getActivePlayer(), switchPlayerTurn(), getGameStatus(), and startGame()", () => {
+test("The game factory function creates a game object with methods getPlayer1(), getPlayer2(), getActivePlayer(), getOpponent(), switchPlayerTurn(), getGameStatus(), and startGame()", () => {
   expect(typeof game.getPlayer1).toBe("function");
   expect(typeof game.getPlayer2).toBe("function");
   expect(typeof game.getActivePlayer).toBe("function");
+  expect(typeof game.getOpponent).toBe("function");
   expect(typeof game.switchPlayerTurn).toBe("function");
   expect(typeof game.getGameStatus).toBe("function");
   expect(typeof game.startGame).toBe("function");
@@ -37,10 +38,17 @@ test("Right after game.startGame() is called, game.getActivePlayer() returns the
   expect(game.getActivePlayer().name).toBe("Bob");
 });
 
-test("After game.startGame() is called, game.switchPlayerTurn() changes the active player", () => {
+test("Right after game.startGame() is called, game.Opponent() returns the player 2 object", () => {
+  game.startGame("Bob");
+  expect(game.getOpponent().name).toBe("Computer");
+});
+
+test("After game.startGame() is called, game.switchPlayerTurn() switches the active player and opponent", () => {
   game.startGame("Bob");
   game.switchPlayerTurn();
   expect(game.getActivePlayer().name).toBe("Computer");
+  expect(game.getOpponent().name).toBe("Bob");
   game.switchPlayerTurn();
   expect(game.getActivePlayer().name).toBe("Bob");
+  expect(game.getOpponent().name).toBe("Computer");
 });
