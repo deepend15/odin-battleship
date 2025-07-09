@@ -1,5 +1,5 @@
 import { Player } from "./player.js";
-import { displayController } from "./display-controller.js";
+// import { displayController } from "./display-controller.js";
 
 export const game = (function () {
   let player1;
@@ -84,7 +84,7 @@ export const game = (function () {
 
     gameStatus = "active";
 
-    displayController.updateScreen();
+    // displayController.updateScreen();
   };
 
   return {
