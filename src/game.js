@@ -5,14 +5,21 @@ export const game = (function () {
   let player1;
   let player2;
   let activePlayer;
+  let opponent;
 
   const getPlayer1 = () => player1;
   const getPlayer2 = () => player2;
   const getActivePlayer = () => activePlayer;
+  const getOpponent = () => opponent;
 
   const switchPlayerTurn = () => {
-    if (activePlayer === player1) activePlayer = player2;
-    else activePlayer = player1;
+    if (activePlayer === player1) {
+      activePlayer = player2;
+      opponent = player1;
+    } else {
+      activePlayer = player1;
+      opponent = player2;
+    }
   };
 
   let gameStatus = "new";
@@ -81,6 +88,7 @@ export const game = (function () {
     );
 
     activePlayer = player1;
+    opponent = player2;
 
     gameStatus = "active";
 
@@ -91,6 +99,7 @@ export const game = (function () {
     getPlayer1,
     getPlayer2,
     getActivePlayer,
+    getOpponent,
     switchPlayerTurn,
     getGameStatus,
     startGame,
