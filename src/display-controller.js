@@ -75,7 +75,7 @@ export const displayController = (function () {
     }
     const opponentRowLabels = document.createElement("div");
     opponentRowLabels.classList.add("row-labels");
-    const rowLabelsText = "0123456789".split("");
+    const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
     for (let i = 0; i < 10; i++) {
       const p = document.createElement("p");
       p.textContent = rowLabelsText[i];
