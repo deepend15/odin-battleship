@@ -179,6 +179,7 @@ export const displayController = (function () {
           const ids = ["2", "3A", "3B", "4", "5"];
           ids.forEach((id) => {
             if (square.includes(id)) {
+              newSquare.classList.add("active-player-ship");
               if (id === "3A" || id === "3B") newSquare.textContent = "3";
               else newSquare.textContent = id;
             }

@@ -188,6 +188,13 @@ h2 {
   cursor: pointer;
 }
 
+.active-player-ship {
+  background-color: darkblue;
+  color: white;
+  font-weight: bold;
+  border: 2px solid silver;
+}
+
 .opponent-ships-div {
   display: flex;
   column-gap: 30px;
