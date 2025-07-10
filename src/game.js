@@ -24,6 +24,7 @@ export const game = (function () {
 
   let gameStatus = "new";
   const getGameStatus = () => gameStatus;
+  const setGameStatus = (value) => gameStatus = value;
 
   const startGame = (player1Name, player2name = "Computer") => {
     player1 = new Player(player1Name, 1, "human");
@@ -102,6 +103,7 @@ export const game = (function () {
     getOpponent,
     switchPlayerTurn,
     getGameStatus,
+    setGameStatus,
     startGame,
   };
 })();

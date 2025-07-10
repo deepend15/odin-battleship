@@ -1,13 +1,14 @@
 import { expect, test } from "@jest/globals";
 import { game } from "./game.js";
 
-test("The game factory function creates a game object with methods getPlayer1(), getPlayer2(), getActivePlayer(), getOpponent(), switchPlayerTurn(), getGameStatus(), and startGame()", () => {
+test("The game factory function creates a game object with methods getPlayer1(), getPlayer2(), getActivePlayer(), getOpponent(), switchPlayerTurn(), getGameStatus(), setGameStatus(), and startGame()", () => {
   expect(typeof game.getPlayer1).toBe("function");
   expect(typeof game.getPlayer2).toBe("function");
   expect(typeof game.getActivePlayer).toBe("function");
   expect(typeof game.getOpponent).toBe("function");
   expect(typeof game.switchPlayerTurn).toBe("function");
   expect(typeof game.getGameStatus).toBe("function");
+  expect(typeof game.setGameStatus).toBe("function");
   expect(typeof game.startGame).toBe("function");
 });
 
@@ -15,7 +16,15 @@ test("game.getGameStatus() returns 'new' before game.startGame() is called", () 
   expect(game.getGameStatus()).toBe("new");
 });
 
+test("game.setGameStatus('active') causes game.getGameStatus() to return 'active'", () => {
+  game.setGameStatus("active");
+  expect(game.getGameStatus()).toBe("active");
+  game.setGameStatus("new");
+  expect(game.getGameStatus()).toBe("new");
+})
+
 test("game.getGameStatus() returns 'active' when game.startGame() is called", () => {
+  expect(game.getGameStatus()).toBe("new");
   game.startGame("Bob");
   expect(game.getGameStatus()).toBe("active");
 });
