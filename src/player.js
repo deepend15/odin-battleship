@@ -7,5 +7,7 @@ export class Player {
     this.type = type;
   }
 
+  lastAttack = null;
+
   gameboard = createGameboard();
 }

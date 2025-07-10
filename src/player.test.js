@@ -8,6 +8,11 @@ test("The Player class creates a new player object with properties 'name', 'id',
   expect(player1.type).toBe("human");
 });
 
+test("The player object includes a 'lastAttack' property that initiates with value 'null'", () => {
+  const player1 = new Player("Bob", 1, "human");
+  expect(player1.lastAttack).toBe(null);
+});
+
 test("The player object includes a 'gameboard' property that contains a gameboard for that player", () => {
   const player1 = new Player("Bob", 1, "human");
   const gameboard = player1.gameboard;
