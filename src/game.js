@@ -91,7 +91,7 @@ export const game = (function () {
     activePlayer = player1;
     opponent = player2;
 
-    gameStatus = "active";
+    gameStatus = "player-turn";
 
     // displayController.updateScreen();
   };
