@@ -19,13 +19,23 @@ export const displayController = (function () {
     infoDiv.classList.add("info-div");
     const infoDivPlayersDiv = document.createElement("div");
     infoDivPlayersDiv.classList.add("info-div-players");
-    const infoDivPlayersActivePlayer = document.createElement("p");
-    infoDivPlayersActivePlayer.textContent = `Active player: ${activePlayer.name}`;
-    const infoDivPlayersOpponent = document.createElement("p");
-    infoDivPlayersOpponent.textContent = `Opponent: ${opponent.name}`;
+    const infoDivPlayersActivePlayerLine1 = document.createElement("p");
+    infoDivPlayersActivePlayerLine1.classList.add("info-active-player");
+    infoDivPlayersActivePlayerLine1.textContent = `Active player: `;
+    const infoDivPlayersActivePlayerLine2 = document.createElement("p");
+    infoDivPlayersActivePlayerLine2.classList.add("info-active-player");
+    infoDivPlayersActivePlayerLine2.textContent = `${activePlayer.name}`;
+    const infoDivPlayersOpponentLine1 = document.createElement("p");
+    infoDivPlayersOpponentLine1.classList.add("info-opponent");
+    infoDivPlayersOpponentLine1.textContent = `Opponent: `;
+    const infoDivPlayersOpponentLine2 = document.createElement("p");
+    infoDivPlayersOpponentLine2.classList.add("info-opponent");
+    infoDivPlayersOpponentLine2.textContent = `${opponent.name}`;
     infoDivPlayersDiv.append(
-      infoDivPlayersActivePlayer,
-      infoDivPlayersOpponent,
+      infoDivPlayersActivePlayerLine1,
+      infoDivPlayersActivePlayerLine2,
+      infoDivPlayersOpponentLine1,
+      infoDivPlayersOpponentLine2,
     );
     const infoDivTextDiv = document.createElement("div");
     infoDivTextDiv.classList.add("info-div-text-div");
@@ -36,7 +46,7 @@ export const displayController = (function () {
     const infoDivTextDivThirdLine = document.createElement("p");
     infoDivTextDivThirdLine.textContent = `-If you hit all of the squares containing one of your opponent's ships, you'll sink that ship!`;
     const infoDivTextDivFourthLine = document.createElement("p");
-    infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other's ships on the board`;
+    infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other player's ships on the board`;
     infoDivTextDiv.append(
       infoDivTextDivFirstLine,
       infoDivTextDivSecondLine,

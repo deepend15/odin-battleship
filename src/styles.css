@@ -46,6 +46,7 @@ h5 {
   display: grid;
   gap: 35px;
   justify-items: center;
+  min-width: min-content;
 }
 
 h1 {
@@ -71,7 +72,21 @@ h1 {
 }
 
 .info-div-players {
-  justify-self: start;
+  justify-self: center;
+  height: min-content;
+  display: grid;
+  column-gap: 25px;
+  grid-template-columns: max-content 1fr;
+  font-weight: 500;
+  font-size: 1.9rem;
+}
+
+.info-active-player {
+  color: green;
+}
+
+.info-opponent {
+  color: red;
 }
 
 .info-div-text-div > p:first-child {
@@ -138,6 +153,7 @@ h2 {
 .row-labels > p {
   border-top: 1px solid gray;
   border-left: 1px solid gray;
+  width: 45px;
 }
 
 .row-labels > p:last-child {
