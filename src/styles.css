@@ -181,18 +181,28 @@ h2 {
   border: 1px solid black;
   background-color: white;
   font-size: 2.2rem;
-}
-
-.hover {
-  background-color: lightgray;
-  cursor: pointer;
+  font-weight: bold;
 }
 
 .active-player-ship {
   background-color: darkblue;
   color: white;
-  font-weight: bold;
   border: 2px solid silver;
+}
+
+.hit {
+  background-color: red;
+  color: yellow;
+  border: 2px solid silver;
+}
+
+.miss {
+  background-color: black;
+}
+
+.hover {
+  background-color: lightgray;
+  cursor: pointer;
 }
 
 .opponent-ships-div {

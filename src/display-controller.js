@@ -1,17 +1,30 @@
 import { game } from "./game.js";
 
 export const displayController = (function () {
-  const gameDiv = document.querySelector(".game-div");
-
   const updateScreen = () => {
-    // clear gameDiv
+    const gameDiv = document.querySelector(".game-div");
+    const opponentShipsDiv = document.querySelector(".opponent-ships-div");
+
+    // clear gameDiv & opponent ships div
 
     gameDiv.textContent = "";
+    opponentShipsDiv.textContent = "";
 
-    // get activePlayer and opponent
+    // get activePlayer and opponent info
 
     const activePlayer = game.getActivePlayer();
+    const activePlayerGameboard = activePlayer.gameboard;
+    const activePlayerBoard = activePlayerGameboard.getBoard();
+
     const opponent = game.getOpponent();
+    const opponentGameboard = opponent.gameboard;
+    const opponentBoard = opponentGameboard.getBoard();
+    const opponentShips = opponentGameboard.ships;
+
+    // create column and row label arrays
+
+    const columnLabelsText = "ABCDEFGHIJ".split("");
+    const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
 
     // create game info text & add to gameDiv
 
@@ -37,22 +50,55 @@ export const displayController = (function () {
       infoDivPlayersOpponentLine1,
       infoDivPlayersOpponentLine2,
     );
+
     const infoDivTextDiv = document.createElement("div");
     infoDivTextDiv.classList.add("info-div-text-div");
     const infoDivTextDivFirstLine = document.createElement("p");
-    infoDivTextDivFirstLine.textContent = `Click a square on your opponent's board to attack that square!`;
-    const infoDivTextDivSecondLine = document.createElement("p");
-    infoDivTextDivSecondLine.textContent = `-If your opponent has a ship occupying that square, their ship will receive a hit`;
-    const infoDivTextDivThirdLine = document.createElement("p");
-    infoDivTextDivThirdLine.textContent = `-If you hit all of the squares containing one of your opponent's ships, you'll sink that ship!`;
-    const infoDivTextDivFourthLine = document.createElement("p");
-    infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other player's ships on the board`;
-    infoDivTextDiv.append(
-      infoDivTextDivFirstLine,
-      infoDivTextDivSecondLine,
-      infoDivTextDivThirdLine,
-      infoDivTextDivFourthLine,
-    );
+
+    if (game.getGameStatus() === "player-turn") {
+      infoDivTextDivFirstLine.textContent = `Click a square on your opponent's board to attack that square!`;
+      const infoDivTextDivSecondLine = document.createElement("p");
+      infoDivTextDivSecondLine.textContent = `-If your opponent has a ship occupying that square, their ship will receive a hit`;
+      const infoDivTextDivThirdLine = document.createElement("p");
+      infoDivTextDivThirdLine.textContent = `-If you hit all of the squares containing one of your opponent's ships, you'll sink that ship!`;
+      const infoDivTextDivFourthLine = document.createElement("p");
+      infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other player's ships on the board`;
+      infoDivTextDiv.append(
+        infoDivTextDivFirstLine,
+        infoDivTextDivSecondLine,
+        infoDivTextDivThirdLine,
+        infoDivTextDivFourthLine,
+      );
+    }
+
+    if (game.getGameStatus() === "active-player-attack") {
+      infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
+      const infoDivTextDivSecondLine = document.createElement("p");
+      let result;
+      const row = rowLabelsText.indexOf(activePlayer.lastAttack[1]);
+      const column = columnLabelsText.indexOf(activePlayer.lastAttack[0]);
+      if (opponentBoard[row][column].includes("hit")) result = "HIT";
+      else result = "MISS";
+      infoDivTextDivSecondLine.textContent = "This was a " + result;
+      const infoDivTextDivThirdLine = document.createElement("p");
+      let name;
+      if (opponent.name === "Computer") name = "the Computer";
+      else name = opponent.name;
+      infoDivTextDivThirdLine.textContent =
+        "Now it's time for " + name + " to take a turn.";
+      const infoDivTextDivFourthLine = document.createElement("p");
+      infoDivTextDivFourthLine.classList.add("important-line");
+      infoDivTextDivFourthLine.textContent = `${activePlayer.name}, please click the OK button when you're ready to proceed:`;
+      const nextPlayerOKBtn = document.createElement("button");
+      nextPlayerOKBtn.textContent = "OK";
+      infoDivTextDiv.append(
+        infoDivTextDivFirstLine,
+        infoDivTextDivSecondLine,
+        infoDivTextDivThirdLine,
+        infoDivTextDivFourthLine,
+        nextPlayerOKBtn,
+      );
+    }
 
     infoDiv.append(infoDivPlayersDiv, infoDivTextDiv);
     gameDiv.append(infoDiv);
@@ -67,7 +113,6 @@ export const displayController = (function () {
     generalBoardDiv1.classList.add("board-div");
     const opponentColumnLabels = document.createElement("div");
     opponentColumnLabels.classList.add("column-labels");
-    const columnLabelsText = "ABCDEFGHIJ".split("");
     for (let i = 0; i < 10; i++) {
       const p = document.createElement("p");
       p.textContent = columnLabelsText[i];
@@ -75,7 +120,6 @@ export const displayController = (function () {
     }
     const opponentRowLabels = document.createElement("div");
     opponentRowLabels.classList.add("row-labels");
-    const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
     for (let i = 0; i < 10; i++) {
       const p = document.createElement("p");
       p.textContent = rowLabelsText[i];
@@ -102,14 +146,14 @@ export const displayController = (function () {
     activePlayerColumnLabels.classList.add("column-labels");
     for (let i = 0; i < 10; i++) {
       const p = document.createElement("p");
-      p.textContent = columnLabelsText.shift();
+      p.textContent = columnLabelsText[i];
       activePlayerColumnLabels.append(p);
     }
     const activePlayerRowLabels = document.createElement("div");
     activePlayerRowLabels.classList.add("row-labels");
     for (let i = 0; i < 10; i++) {
       const p = document.createElement("p");
-      p.textContent = rowLabelsText.shift();
+      p.textContent = rowLabelsText[i];
       activePlayerRowLabels.append(p);
     }
     const activePlayerBoardDiv = document.createElement("div");
@@ -127,9 +171,6 @@ export const displayController = (function () {
 
     // fill in opponent board
 
-    const opponentGameboard = opponent.gameboard;
-    const opponentBoard = opponentGameboard.getBoard();
-
     opponentBoard.forEach((row, index) => {
       let rowIndex = index;
       row.forEach((square, index) => {
@@ -141,7 +182,14 @@ export const displayController = (function () {
           if (square.includes("miss")) newSquare.classList.add("miss");
           if (square.includes("hit")) {
             newSquare.classList.add("hit");
-            newSquare.textContent = "X";
+            if (square.includes("is sunk")) {
+              square.classList.add("is-sunk");
+              const ids = ["2", "3A", "3B", "4", "5"];
+              const matchingID = ids.filter((id) => square.includes(id))[0];
+              if (matchingID === "3A" || matchingID === "3B")
+                newSquare.textContent = "3";
+              else newSquare.textContent = matchingID;
+            } else newSquare.textContent = "X";
           }
         }
         opponentBoardDiv.appendChild(newSquare);
@@ -156,17 +204,34 @@ export const displayController = (function () {
       e.target.classList.toggle("hover");
     }
 
-    opponentSquares.forEach((square) => {
-      if (square.textContent === "") {
-        square.addEventListener("mouseover", toggleSquareHover);
-        square.addEventListener("mouseout", toggleSquareHover);
-      }
-    });
+    function attackSquare(e) {
+      const selectedRow = e.target.dataset.row;
+      const selectedColumn = e.target.dataset.column;
+      opponentGameboard.receiveAttack([selectedRow, selectedColumn]);
+      activePlayer.lastAttack = [
+        columnLabelsText[Number(selectedColumn)],
+        rowLabelsText[Number(selectedRow)],
+      ];
+      game.setGameStatus("active-player-attack");
+      displayController.updateScreen();
+    }
+
+    if (game.getGameStatus() === "player-turn") {
+      opponentSquares.forEach((square) => {
+        if (
+          !(
+            square.classList.contains("hit") ||
+            square.classList.contains("miss")
+          )
+        ) {
+          square.addEventListener("mouseover", toggleSquareHover);
+          square.addEventListener("mouseout", toggleSquareHover);
+          square.addEventListener("click", attackSquare);
+        }
+      });
+    }
 
     // fill in active player board
-
-    const activePlayerGameboard = activePlayer.gameboard;
-    const activePlayerBoard = activePlayerGameboard.getBoard();
 
     activePlayerBoard.forEach((row, index) => {
       let rowIndex = index;
@@ -176,24 +241,26 @@ export const displayController = (function () {
         newSquare.dataset.row = rowIndex;
         newSquare.dataset.column = index;
         if (square !== null) {
-          const ids = ["2", "3A", "3B", "4", "5"];
-          ids.forEach((id) => {
-            if (square.includes(id)) {
-              newSquare.classList.add("active-player-ship");
-              if (id === "3A" || id === "3B") newSquare.textContent = "3";
-              else newSquare.textContent = id;
-            }
-          });
+          if (square.includes("miss")) newSquare.classList.add("miss");
+          else {
+            const ids = ["2", "3A", "3B", "4", "5"];
+            ids.forEach((id) => {
+              if (square.includes(id)) {
+                newSquare.classList.add("active-player-ship");
+                if (square.includes("hit")) newSquare.classList.add("hit");
+                if (square.includes("is sunk")) newSquare.classList.add("is-sunk");
+                if (id === "3A" || id === "3B") newSquare.textContent = "3";
+                else newSquare.textContent = id;
+              }
+            });
+          }
         }
         activePlayerBoardDiv.append(newSquare);
       });
     });
 
-    // fill in player ship count
+    // fill in opponent ship count
 
-    const opponentShips = opponentGameboard.ships;
-
-    const opponentShipsDiv = document.createElement("div");
     opponentShipsDiv.classList.add("opponent-ships-div");
     const opponentShipsDivText = document.createElement("p");
     opponentShipsDivText.textContent = `Opponent ships remaining:`;
@@ -210,9 +277,6 @@ export const displayController = (function () {
         opponentShipsDiv.append(shipDiv);
       }
     });
-
-    const mainContainer = document.querySelector(".main-container");
-    mainContainer.append(opponentShipsDiv);
   };
 
   return { updateScreen };
