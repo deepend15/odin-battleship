@@ -187,6 +187,31 @@ export const displayController = (function () {
         activePlayerBoardDiv.append(newSquare);
       });
     });
+
+    // fill in player ship count
+
+    const opponentShips = opponentGameboard.ships;
+
+    const opponentShipsDiv = document.createElement("div");
+    opponentShipsDiv.classList.add("opponent-ships-div");
+    const opponentShipsDivText = document.createElement("p");
+    opponentShipsDivText.textContent = `Opponent ships remaining:`;
+    opponentShipsDiv.append(opponentShipsDivText);
+    opponentShips.forEach((ship) => {
+      if (!ship.isSunk()) {
+        const shipDiv = document.createElement("div");
+        shipDiv.classList.add("ship-div");
+        for (let i = 0; i < ship.length; i++) {
+          const squareDiv = document.createElement("div");
+          squareDiv.textContent = ship.length.toString();
+          shipDiv.append(squareDiv);
+        }
+        opponentShipsDiv.append(shipDiv);
+      }
+    });
+
+    const mainContainer = document.querySelector(".main-container");
+    mainContainer.append(opponentShipsDiv);
   };
 
   return { updateScreen };
