@@ -72,6 +72,9 @@ export const displayController = (function () {
     }
 
     if (game.getGameStatus() === "active-player-attack") {
+      infoDivTextDiv.classList.add("info-div-player-attack");
+      const infoDivTextDivTop = document.createElement("div");
+      infoDivTextDivTop.classList.add("info-div-text-div-top");
       infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
       const infoDivTextDivSecondLine = document.createElement("p");
       let result;
@@ -80,23 +83,27 @@ export const displayController = (function () {
       if (opponentBoard[row][column].includes("hit")) result = "HIT";
       else result = "MISS";
       infoDivTextDivSecondLine.textContent = "This was a " + result;
+      infoDivTextDivTop.append(
+        infoDivTextDivFirstLine,
+        infoDivTextDivSecondLine,
+      );
       const infoDivTextDivThirdLine = document.createElement("p");
       let name;
       if (opponent.name === "Computer") name = "the Computer";
       else name = opponent.name;
       infoDivTextDivThirdLine.textContent =
-        "Now it's time for " + name + " to take a turn.";
+        "Now, it's time for " + name + " to take a turn.";
+      const infoDivTextDivBottom = document.createElement("div");
+      infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
       const infoDivTextDivFourthLine = document.createElement("p");
-      infoDivTextDivFourthLine.classList.add("important-line");
-      infoDivTextDivFourthLine.textContent = `${activePlayer.name}, please click the OK button when you're ready to proceed:`;
+      infoDivTextDivFourthLine.textContent = `Click OK to proceed:`;
       const nextPlayerOKBtn = document.createElement("button");
       nextPlayerOKBtn.textContent = "OK";
+      infoDivTextDivBottom.append(infoDivTextDivFourthLine, nextPlayerOKBtn);
       infoDivTextDiv.append(
-        infoDivTextDivFirstLine,
-        infoDivTextDivSecondLine,
+        infoDivTextDivTop,
         infoDivTextDivThirdLine,
-        infoDivTextDivFourthLine,
-        nextPlayerOKBtn,
+        infoDivTextDivBottom,
       );
     }
 
@@ -248,7 +255,8 @@ export const displayController = (function () {
               if (square.includes(id)) {
                 newSquare.classList.add("active-player-ship");
                 if (square.includes("hit")) newSquare.classList.add("hit");
-                if (square.includes("is sunk")) newSquare.classList.add("is-sunk");
+                if (square.includes("is sunk"))
+                  newSquare.classList.add("is-sunk");
                 if (id === "3A" || id === "3B") newSquare.textContent = "3";
                 else newSquare.textContent = id;
               }
