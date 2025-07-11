@@ -274,7 +274,7 @@ export const displayController = (function () {
           activePlayer.lastAttackResult = "SINK";
         } else activePlayer.lastAttackResult = "HIT";
       }
-      if (opponentGameboard.allShipsSunk() === true) {
+      if (opponentGameboard.allShipsSunk()) {
         game.setGameStatus("game-over");
       } else {
         game.setGameStatus("active-player-attack");
