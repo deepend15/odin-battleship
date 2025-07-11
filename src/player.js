@@ -8,6 +8,7 @@ export class Player {
   }
 
   lastAttack = null;
+  lastAttackResult = null;
 
   gameboard = createGameboard();
 }
