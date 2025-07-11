@@ -71,37 +71,88 @@ export const displayController = (function () {
       );
     }
 
-    if (game.getGameStatus() === "active-player-attack") {
+    if (
+      game.getGameStatus() === "active-player-attack" ||
+      game.getGameStatus() === "game-over"
+    ) {
       infoDivTextDiv.classList.add("info-div-player-attack");
       const infoDivTextDivTop = document.createElement("div");
       infoDivTextDivTop.classList.add("info-div-text-div-top");
       infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
       const infoDivTextDivSecondLine = document.createElement("p");
       let result;
-      const row = rowLabelsText.indexOf(activePlayer.lastAttack[1]);
-      const column = columnLabelsText.indexOf(activePlayer.lastAttack[0]);
-      if (opponentBoard[row][column].includes("hit")) result = "HIT";
-      else result = "MISS";
+      if (activePlayer.lastAttackResult === "SINK") result = "HIT";
+      else result = activePlayer.lastAttackResult;
       infoDivTextDivSecondLine.textContent = "This was a " + result;
       infoDivTextDivTop.append(
         infoDivTextDivFirstLine,
         infoDivTextDivSecondLine,
       );
-      const infoDivTextDivThirdLine = document.createElement("p");
-      infoDivTextDivThirdLine.textContent =
-        `Next turn: ${opponent.name}`;
-      const infoDivTextDivBottom = document.createElement("div");
-      infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
-      const infoDivTextDivFourthLine = document.createElement("p");
-      infoDivTextDivFourthLine.textContent = `Click OK to proceed:`;
-      const nextPlayerOKBtn = document.createElement("button");
-      nextPlayerOKBtn.textContent = "OK";
-      infoDivTextDivBottom.append(infoDivTextDivFourthLine, nextPlayerOKBtn);
-      infoDivTextDiv.append(
-        infoDivTextDivTop,
-        infoDivTextDivThirdLine,
-        infoDivTextDivBottom,
-      );
+      infoDivTextDiv.append(infoDivTextDivTop);
+
+      if (!(game.getGameStatus() === "game-over")) {
+        if (activePlayer.lastAttackResult === "SINK") {
+          const sinkTextDiv = document.createElement("div");
+          sinkTextDiv.classList.add("sink-text-div");
+          const sinkText1 = document.createElement("p");
+          sinkText1.textContent = "*SHIP SUNK!*";
+          const sinkText2 = document.createElement("p");
+          sinkText2.textContent = "Woo-hoo!";
+          sinkTextDiv.append(sinkText1, sinkText2);
+          infoDivTextDiv.append(sinkTextDiv);
+        }
+        const infoDivTextDivThirdLine = document.createElement("p");
+        infoDivTextDivThirdLine.textContent = `Next turn: ${opponent.name}`;
+        const infoDivTextDivBottom = document.createElement("div");
+        infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
+        const infoDivTextDivFourthLine = document.createElement("p");
+        infoDivTextDivFourthLine.textContent = `Click OK to proceed:`;
+        const nextTurnOKBtn = document.createElement("button");
+        nextTurnOKBtn.textContent = "OK";
+        infoDivTextDivBottom.append(infoDivTextDivFourthLine, nextTurnOKBtn);
+
+        function initiateNextTurn() {
+          // testing code
+
+          game.setGameStatus("player-turn");
+          displayController.updateScreen();
+
+          // what will approximate the real code
+
+          // if (opponent.name === "Computer") {
+          //   game.setGameStatus("computer-turn");
+          //   displayController.updateScreen();
+          // } else {
+          //   game.switchPlayerTurn();
+          //   game.setGameStatus("player-turn");
+          //   displayController.updateScreen();
+          // }
+        }
+
+        nextTurnOKBtn.addEventListener("click", initiateNextTurn);
+
+        infoDivTextDiv.append(infoDivTextDivThirdLine, infoDivTextDivBottom);
+      } else {
+        const gameOverText = document.createElement("div");
+        gameOverText.classList.add("game-over-text");
+        gameOverText.textContent = "*GAME OVER!*";
+        const infoDivTextDivThirdLine = document.createElement("p");
+        if (opponentGameboard.allShipsSunk()) {
+          infoDivTextDivThirdLine.textContent = `Congrats! You win!`;
+        } else infoDivTextDivThirdLine.textContent = `Sorry, you lose :(`;
+        const infoDivTextDivBottom = document.createElement("div");
+        infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
+        const infoDivTextDivFourthLine = document.createElement("p");
+        infoDivTextDivFourthLine.textContent = `Click OK to play again:`;
+        const playAgainOKBtn = document.createElement("button");
+        playAgainOKBtn.textContent = "OK";
+        infoDivTextDivBottom.append(infoDivTextDivFourthLine, playAgainOKBtn);
+        infoDivTextDiv.append(
+          gameOverText,
+          infoDivTextDivThirdLine,
+          infoDivTextDivBottom,
+        );
+      }
     }
 
     infoDiv.append(infoDivPlayersDiv, infoDivTextDiv);
@@ -187,7 +238,7 @@ export const displayController = (function () {
           if (square.includes("hit")) {
             newSquare.classList.add("hit");
             if (square.includes("is sunk")) {
-              square.classList.add("is-sunk");
+              newSquare.classList.add("is-sunk");
               const ids = ["2", "3A", "3B", "4", "5"];
               const matchingID = ids.filter((id) => square.includes(id))[0];
               if (matchingID === "3A" || matchingID === "3B")
@@ -216,9 +267,20 @@ export const displayController = (function () {
         columnLabelsText[Number(selectedColumn)],
         rowLabelsText[Number(selectedRow)],
       ];
-      game.setGameStatus("active-player-attack");
-      displayController.updateScreen()
-      window.scrollTo(0,0);
+      if (opponentBoard[selectedRow][selectedColumn].includes("miss"))
+        activePlayer.lastAttackResult = "MISS";
+      if (opponentBoard[selectedRow][selectedColumn].includes("hit")) {
+        if (opponentBoard[selectedRow][selectedColumn].includes("is sunk")) {
+          activePlayer.lastAttackResult = "SINK";
+        } else activePlayer.lastAttackResult = "HIT";
+      }
+      if (opponentGameboard.allShipsSunk() === true) {
+        game.setGameStatus("game-over");
+      } else {
+        game.setGameStatus("active-player-attack");
+      }
+      displayController.updateScreen();
+      window.scrollTo(0, 0);
     }
 
     if (game.getGameStatus() === "player-turn") {

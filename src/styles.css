@@ -125,6 +125,25 @@ h1 {
 
 .info-div-text-div.info-div-player-attack > p:not(:first-child) {
   margin-bottom: 0;
+  font-size: 1.9rem;
+}
+
+.sink-text-div > p:first-child {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: red;
+}
+
+.sink-text-div > p:last-child {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.game-over-text {
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: red;
 }
 
 .info-div-text-div-bottom {
@@ -252,6 +271,11 @@ h2 {
 
 .miss {
   background-color: black;
+}
+
+.is-sunk {
+  background-color: gray;
+  color: black;
 }
 
 .hover {
