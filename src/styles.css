@@ -66,8 +66,7 @@ h1 {
   display: grid;
   grid-template-rows: min-content 1fr;
   gap: 25px;
-  flex-basis: 200px;
-  flex-grow: 1;
+  width: 250px;
   line-height: 1.5;
   font-size: 1.7rem;
 }

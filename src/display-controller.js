@@ -34,7 +34,7 @@ export const displayController = (function () {
     infoDivPlayersDiv.classList.add("info-div-players");
     const infoDivPlayersActivePlayerLine1 = document.createElement("p");
     infoDivPlayersActivePlayerLine1.classList.add("info-active-player");
-    infoDivPlayersActivePlayerLine1.textContent = `Active player: `;
+    infoDivPlayersActivePlayerLine1.textContent = `Current turn: `;
     const infoDivPlayersActivePlayerLine2 = document.createElement("p");
     infoDivPlayersActivePlayerLine2.classList.add("info-active-player");
     infoDivPlayersActivePlayerLine2.textContent = `${activePlayer.name}`;
@@ -88,11 +88,8 @@ export const displayController = (function () {
         infoDivTextDivSecondLine,
       );
       const infoDivTextDivThirdLine = document.createElement("p");
-      let name;
-      if (opponent.name === "Computer") name = "the Computer";
-      else name = opponent.name;
       infoDivTextDivThirdLine.textContent =
-        "Now, it's time for " + name + " to take a turn.";
+        `Next turn: ${opponent.name}`;
       const infoDivTextDivBottom = document.createElement("div");
       infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
       const infoDivTextDivFourthLine = document.createElement("p");
@@ -220,7 +217,8 @@ export const displayController = (function () {
         rowLabelsText[Number(selectedRow)],
       ];
       game.setGameStatus("active-player-attack");
-      displayController.updateScreen();
+      displayController.updateScreen()
+      window.scrollTo(0,0);
     }
 
     if (game.getGameStatus() === "player-turn") {
