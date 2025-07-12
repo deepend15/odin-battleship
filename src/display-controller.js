@@ -151,10 +151,7 @@ export const displayController = (function () {
         const changePlayersBtn = document.createElement("button");
         changePlayersBtn.textContent = "Change players";
         gameOverButtonsDiv.append(playAgainOKBtn, changePlayersBtn);
-        infoDivTextDiv.append(
-          gameOverDiv,
-          gameOverButtonsDiv,
-        );
+        infoDivTextDiv.append(gameOverDiv, gameOverButtonsDiv);
       }
     }
 
@@ -238,16 +235,27 @@ export const displayController = (function () {
         newSquare.dataset.column = index;
         if (Array.isArray(square)) {
           if (square.includes("miss")) newSquare.classList.add("miss");
-          if (square.includes("hit")) {
-            newSquare.classList.add("hit");
-            if (square.includes("is sunk")) {
-              newSquare.classList.add("is-sunk");
-              const ids = ["2", "3A", "3B", "4", "5"];
-              const matchingID = ids.filter((id) => square.includes(id))[0];
-              if (matchingID === "3A" || matchingID === "3B")
-                newSquare.textContent = "3";
-              else newSquare.textContent = matchingID;
-            } else newSquare.textContent = "X";
+          if (game.getGameStatus() === "game-over") {
+            const ids = ["2", "3A", "3B", "4", "5"];
+            ids.forEach((id) => {
+              if (square.includes(id)) {
+                newSquare.classList.add("is-sunk");
+                if (id === "3A" || id === "3B") newSquare.textContent = "3";
+                else newSquare.textContent = id;
+              }
+            });
+          } else {
+            if (square.includes("hit")) {
+              newSquare.classList.add("hit");
+              if (square.includes("is sunk")) {
+                newSquare.classList.add("is-sunk");
+                const ids = ["2", "3A", "3B", "4", "5"];
+                const matchingID = ids.filter((id) => square.includes(id))[0];
+                if (matchingID === "3A" || matchingID === "3B")
+                  newSquare.textContent = "3";
+                else newSquare.textContent = matchingID;
+              } else newSquare.textContent = "X";
+            }
           }
         }
         opponentBoardDiv.appendChild(newSquare);
