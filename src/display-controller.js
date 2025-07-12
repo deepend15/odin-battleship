@@ -144,8 +144,6 @@ export const displayController = (function () {
         gameOverDiv.append(gameOverText1, gameOverText2);
         const gameOverButtonsDiv = document.createElement("div");
         gameOverButtonsDiv.classList.add("game-over-buttons");
-        // const infoDivTextDivThirdLine = document.createElement("p");
-        // infoDivTextDivThirdLine.textContent = `Click OK to play again:`;
         const playAgainOKBtn = document.createElement("button");
         playAgainOKBtn.textContent = "Play again";
         const changePlayersBtn = document.createElement("button");
