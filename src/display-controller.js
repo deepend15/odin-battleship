@@ -1,4 +1,5 @@
 import { game } from "./game.js";
+import { computer } from "./computer.js";
 
 export const displayController = (function () {
   const updateScreen = () => {
@@ -37,13 +38,21 @@ export const displayController = (function () {
     infoDivPlayersActivePlayerLine1.textContent = `Current turn: `;
     const infoDivPlayersActivePlayerLine2 = document.createElement("p");
     infoDivPlayersActivePlayerLine2.classList.add("info-active-player");
-    infoDivPlayersActivePlayerLine2.textContent = `${activePlayer.name}`;
+    if (game.getGameStatus() === "computer-attack") {
+      infoDivPlayersActivePlayerLine2.textContent = `${opponent.name}`;
+    } else {
+      infoDivPlayersActivePlayerLine2.textContent = `${activePlayer.name}`;
+    }
     const infoDivPlayersOpponentLine1 = document.createElement("p");
     infoDivPlayersOpponentLine1.classList.add("info-opponent");
     infoDivPlayersOpponentLine1.textContent = `Opponent: `;
     const infoDivPlayersOpponentLine2 = document.createElement("p");
     infoDivPlayersOpponentLine2.classList.add("info-opponent");
-    infoDivPlayersOpponentLine2.textContent = `${opponent.name}`;
+    if (game.getGameStatus() === "computer-attack") {
+      infoDivPlayersOpponentLine2.textContent = `${activePlayer.name}`;
+    } else {
+      infoDivPlayersOpponentLine2.textContent = `${opponent.name}`;
+    }
     infoDivPlayersDiv.append(
       infoDivPlayersActivePlayerLine1,
       infoDivPlayersActivePlayerLine2,
@@ -73,16 +82,26 @@ export const displayController = (function () {
 
     if (
       game.getGameStatus() === "active-player-attack" ||
+      game.getGameStatus() === "computer-attack" ||
       game.getGameStatus() === "game-over"
     ) {
       infoDivTextDiv.classList.add("info-div-player-attack");
       const infoDivTextDivTop = document.createElement("div");
       infoDivTextDivTop.classList.add("info-div-text-div-top");
-      infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
+      if (game.getGameStatus() === "computer-attack") {
+        infoDivTextDivFirstLine.textContent = `The computer attacked: ${opponent.lastAttack.join("")}`;
+      } else {
+        infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
+      }
       const infoDivTextDivSecondLine = document.createElement("p");
       let result;
-      if (activePlayer.lastAttackResult === "SINK") result = "HIT";
-      else result = activePlayer.lastAttackResult;
+      if (game.getGameStatus() === "computer-attack") {
+        if (opponent.lastAttackResult === "SINK") result = "HIT";
+        else result = opponent.lastAttackResult;
+      } else {
+        if (activePlayer.lastAttackResult === "SINK") result = "HIT";
+        else result = activePlayer.lastAttackResult;
+      }
       infoDivTextDivSecondLine.textContent = "This was a " + result;
       infoDivTextDivTop.append(
         infoDivTextDivFirstLine,
@@ -91,18 +110,30 @@ export const displayController = (function () {
       infoDivTextDiv.append(infoDivTextDivTop);
 
       if (!(game.getGameStatus() === "game-over")) {
-        if (activePlayer.lastAttackResult === "SINK") {
+        if (
+          (game.getGameStatus() === "computer-attack" &&
+            opponent.lastAttackResult === "SINK") ||
+          (game.getGameStatus() === "active-player-attack" &&
+            activePlayer.lastAttackResult === "SINK")
+        ) {
           const sinkTextDiv = document.createElement("div");
           sinkTextDiv.classList.add("sink-text-div");
           const sinkText1 = document.createElement("p");
           sinkText1.textContent = "*SHIP SUNK!*";
-          const sinkText2 = document.createElement("p");
-          sinkText2.textContent = "Woo-hoo!";
-          sinkTextDiv.append(sinkText1, sinkText2);
+          sinkTextDiv.append(sinkText1);
+          if (game.getGameStatus() === "active-player-attack") {
+            const sinkText2 = document.createElement("p");
+            sinkText2.textContent = "Woo-hoo!";
+            sinkTextDiv.append(sinkText2);
+          }
           infoDivTextDiv.append(sinkTextDiv);
         }
         const infoDivTextDivThirdLine = document.createElement("p");
-        infoDivTextDivThirdLine.textContent = `Next turn: ${opponent.name}`;
+        if (game.getGameStatus() === "computer-attack") {
+          infoDivTextDivThirdLine.textContent = `Next turn: ${activePlayer.name}`;
+        } else {
+          infoDivTextDivThirdLine.textContent = `Next turn: ${opponent.name}`;
+        }
         const infoDivTextDivBottom = document.createElement("div");
         infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
         const infoDivTextDivFourthLine = document.createElement("p");
@@ -114,19 +145,27 @@ export const displayController = (function () {
         function initiateNextTurn() {
           // testing code
 
-          game.setGameStatus("player-turn");
-          displayController.updateScreen();
+          // game.setGameStatus("player-turn");
+          // displayController.updateScreen();
 
           // what will approximate the real code
 
-          // if (opponent.name === "Computer") {
-          //   game.setGameStatus("computer-turn");
-          //   displayController.updateScreen();
-          // } else {
-          //   game.switchPlayerTurn();
-          //   game.setGameStatus("player-turn");
-          //   displayController.updateScreen();
-          // }
+          if (game.getGameStatus() === "active-player-attack") {
+            if (opponent.name === "Computer") {
+              computer().computerAttack();
+              if (activePlayerGameboard.allShipsSunk())
+                game.setGameStatus("game-over");
+              else game.setGameStatus("computer-attack");
+              displayController.updateScreen();
+            } else {
+              game.switchPlayerTurn();
+              game.setGameStatus("player-turn");
+              displayController.updateScreen();
+            }
+          } else {
+            game.setGameStatus("player-turn");
+            displayController.updateScreen();
+          }
         }
 
         nextTurnOKBtn.addEventListener("click", initiateNextTurn);
