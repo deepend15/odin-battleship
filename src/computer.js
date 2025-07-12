@@ -25,18 +25,29 @@ export function computer() {
       return true;
     }
 
-    function generateRandomCoordinates() {
-      const x = Math.floor(Math.random() * 9);
-      const y = Math.floor(Math.random() * 9);
+    const queue = [];
 
-      if (isValid([x, y])) {
-        return [x, y];
+    function generateRandomCoordinates() {
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 10);
+
+      queue.push([x, y]);
+    }
+
+    generateRandomCoordinates();
+
+    let randomCoordinates;
+
+    while (queue.length !== 0) {
+      if (isValid(queue[0])) {
+        randomCoordinates = queue.shift();
       } else {
         generateRandomCoordinates();
+        queue.shift();
       }
     }
 
-    const randomCoordinates = generateRandomCoordinates();
+    console.log(randomCoordinates);
 
     humanPlayerGameboard.receiveAttack(randomCoordinates);
 
@@ -48,10 +59,22 @@ export function computer() {
       rowLabels[randomCoordinates[0]],
     ];
 
-    if (humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes("miss"))
+    if (
+      humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes(
+        "miss",
+      )
+    )
       computerPlayer.lastAttackResult = "MISS";
-    if (humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes("hit")) {
-      if (humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes("is sunk")) {
+    if (
+      humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes(
+        "hit",
+      )
+    ) {
+      if (
+        humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes(
+          "is sunk",
+        )
+      ) {
         computerPlayer.lastAttackResult = "SINK";
       } else computerPlayer.lastAttackResult = "HIT";
     }
