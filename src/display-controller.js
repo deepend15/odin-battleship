@@ -133,24 +133,27 @@ export const displayController = (function () {
 
         infoDivTextDiv.append(infoDivTextDivThirdLine, infoDivTextDivBottom);
       } else {
-        const gameOverText = document.createElement("div");
-        gameOverText.classList.add("game-over-text");
-        gameOverText.textContent = "*GAME OVER!*";
-        const infoDivTextDivThirdLine = document.createElement("p");
+        const gameOverDiv = document.createElement("div");
+        gameOverDiv.classList.add("game-over-div");
+        const gameOverText1 = document.createElement("p");
+        gameOverText1.textContent = "*GAME OVER!*";
+        const gameOverText2 = document.createElement("p");
         if (opponentGameboard.allShipsSunk()) {
-          infoDivTextDivThirdLine.textContent = `Congrats! You win!`;
-        } else infoDivTextDivThirdLine.textContent = `Sorry, you lose :(`;
-        const infoDivTextDivBottom = document.createElement("div");
-        infoDivTextDivBottom.classList.add("info-div-text-div-bottom");
-        const infoDivTextDivFourthLine = document.createElement("p");
-        infoDivTextDivFourthLine.textContent = `Click OK to play again:`;
+          gameOverText2.textContent = `Congrats! You win!`;
+        } else gameOverText2.textContent = `Sorry, you lose :(`;
+        gameOverDiv.append(gameOverText1, gameOverText2);
+        const gameOverButtonsDiv = document.createElement("div");
+        gameOverButtonsDiv.classList.add("game-over-buttons");
+        // const infoDivTextDivThirdLine = document.createElement("p");
+        // infoDivTextDivThirdLine.textContent = `Click OK to play again:`;
         const playAgainOKBtn = document.createElement("button");
-        playAgainOKBtn.textContent = "OK";
-        infoDivTextDivBottom.append(infoDivTextDivFourthLine, playAgainOKBtn);
+        playAgainOKBtn.textContent = "Play again";
+        const changePlayersBtn = document.createElement("button");
+        changePlayersBtn.textContent = "Change players";
+        gameOverButtonsDiv.append(playAgainOKBtn, changePlayersBtn);
         infoDivTextDiv.append(
-          gameOverText,
-          infoDivTextDivThirdLine,
-          infoDivTextDivBottom,
+          gameOverDiv,
+          gameOverButtonsDiv,
         );
       }
     }
