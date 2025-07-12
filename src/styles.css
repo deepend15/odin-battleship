@@ -329,9 +329,13 @@ h2 {
   gap: 2px;
 }
 
-.ship-div > div {
+.ship-div > div,
+.empty-square-div {
   height: 30px;
   width: 30px;
+}
+
+.ship-div > div {
   background-color: darkblue;
   color: white;
   display: grid;

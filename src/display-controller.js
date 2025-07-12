@@ -344,6 +344,17 @@ export const displayController = (function () {
     const opponentShipsDivText = document.createElement("p");
     opponentShipsDivText.textContent = `Opponent ships remaining:`;
     opponentShipsDiv.append(opponentShipsDivText);
+
+    // without the below code, if the game ends and the opponent has no more ships remaining, the
+    // empty "opponent ships" section at the bottom of the page might shift the other elements on
+    // the page in an undesired way. creating and formatting an empty square div prevents this
+
+    if (opponentGameboard.allShipsSunk()) {
+      const emptySquareDiv = document.createElement("div");
+      emptySquareDiv.classList.add("empty-square-div");
+      opponentShipsDiv.append(emptySquareDiv);
+    }
+
     opponentShips.forEach((ship) => {
       if (!ship.isSunk()) {
         const shipDiv = document.createElement("div");
