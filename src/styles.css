@@ -125,7 +125,7 @@ h1 {
 
 .info-div-text-div.info-div-player-attack > p:not(:first-child) {
   margin-bottom: 0;
-  font-size: 1.9rem;
+  font-size: 2rem;
 }
 
 .sink-text-div > p:first-child,
@@ -139,7 +139,7 @@ h1 {
   margin-bottom: 10px;
 }
 
-.sink-text-div > p:last-child {
+.sink-text-div > p + p {
   font-size: 2.2rem;
   font-weight: 500;
 }
