@@ -186,19 +186,30 @@ h1 {
   justify-content: center;
 }
 
-.game-over-buttons > button {
+.game-over-buttons > button,
+.main-container > button {
   width: 180px;
-  padding: 12px 0;
   border-radius: 25px;
   background-color: rgb(225, 225, 225);
   border: 2px outset silver;
 }
 
-.game-over-buttons > button:hover {
+.game-over-buttons > button {
+  padding: 12px 0;
+}
+
+.main-container > button {
+  padding: 15px 5px;
+  font-size: 1.9rem;
+}
+
+.game-over-buttons > button:hover,
+.main-container > button:hover {
   background-color: rgb(197, 197, 197);
 }
 
-.game-over-buttons > button:active {
+.game-over-buttons > button:active,
+.main-container > button:active {
   background-color: rgb(174, 174, 174);
   border-style: inset;
 }
@@ -263,8 +274,7 @@ h2 {
   border-bottom: 1px solid gray;
 }
 
-.opponent-board,
-.active-player-board {
+.board {
   grid-column: 2;
   grid-row: 2;
   display: grid;
