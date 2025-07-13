@@ -143,13 +143,6 @@ export const displayController = (function () {
         infoDivTextDivBottom.append(infoDivTextDivFourthLine, nextTurnOKBtn);
 
         function initiateNextTurn() {
-          // testing code
-
-          // game.setGameStatus("player-turn");
-          // displayController.updateScreen();
-
-          // what will approximate the real code
-
           if (game.getGameStatus() === "active-player-attack") {
             if (opponent.name === "Computer") {
               computer().computerAttack();
