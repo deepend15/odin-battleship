@@ -3,6 +3,8 @@ import { computer } from "./computer.js";
 
 export const displayController = (function () {
   const updateScreen = () => {
+    window.scrollTo(0, 0);
+    
     const gameDiv = document.querySelector(".game-div");
     const opponentShipsDiv = document.querySelector(".opponent-ships-div");
 
@@ -26,7 +28,7 @@ export const displayController = (function () {
       newGameButton.addEventListener("click", () => {
         game.startGame("Bob");
         displayController.updateScreen();
-      })
+      });
 
       const generalBoardDiv = document.createElement("div");
       generalBoardDiv.classList.add("board-div");
@@ -54,7 +56,6 @@ export const displayController = (function () {
       }
       gameDiv.append(generalBoardDiv);
     } else {
-
       // remove new game button
 
       if (gameDiv.previousElementSibling.nodeName === "BUTTON") {
@@ -366,7 +367,6 @@ export const displayController = (function () {
           game.setGameStatus("active-player-attack");
         }
         displayController.updateScreen();
-        window.scrollTo(0, 0);
       }
 
       if (game.getGameStatus() === "player-turn") {
@@ -444,6 +444,8 @@ export const displayController = (function () {
       });
     }
   };
+
+  updateScreen();
 
   return { updateScreen };
 })();

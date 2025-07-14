@@ -1,8 +1,6 @@
 import "./styles.css";
 import { displayController } from "./display-controller.js";
 
-displayController.updateScreen();
-
 // function computerWinGame() {
 //   const player1 = game.getPlayer1();
 //   const player1Gameboard = player1.gameboard;
