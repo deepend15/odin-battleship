@@ -1,10 +1,11 @@
 import { game } from "./game.js";
 import { computer } from "./computer.js";
+import { activateNewGame } from "./activate-new-game.js";
 
 export const displayController = (function () {
   const updateScreen = () => {
     window.scrollTo(0, 0);
-    
+
     const gameDiv = document.querySelector(".game-div");
     const opponentShipsDiv = document.querySelector(".opponent-ships-div");
 
@@ -25,10 +26,7 @@ export const displayController = (function () {
       newGameButton.textContent = "New game";
       gameDiv.before(newGameButton);
 
-      newGameButton.addEventListener("click", () => {
-        game.startGame("Bob");
-        displayController.updateScreen();
-      });
+      newGameButton.addEventListener("click", activateNewGame);
 
       const generalBoardDiv = document.createElement("div");
       generalBoardDiv.classList.add("board-div");
