@@ -226,6 +226,12 @@ export const displayController = (function () {
           changePlayersBtn.textContent = "Change players";
           gameOverButtonsDiv.append(playAgainOKBtn, changePlayersBtn);
           infoDivTextDiv.append(gameOverDiv, gameOverButtonsDiv);
+
+          playAgainOKBtn.addEventListener("click", () => {
+            game.startGame(game.getPlayer1().name, game.getPlayer2().name);
+            displayController.updateScreen();
+          });
+          changePlayersBtn.addEventListener("click", activateNewGame);
         }
       }
 
