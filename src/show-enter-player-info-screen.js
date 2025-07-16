@@ -65,6 +65,7 @@ export function showEnterPlayerInfoScreen(e) {
 
     if (numberOfPlayers === 1) game.startGame(p1Input.value);
     else game.startGame(p1Input.value, p2Input.value);
+    game.setGameStatus("ship-placement");
     displayController.updateScreen();
   });
 
