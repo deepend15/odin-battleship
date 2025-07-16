@@ -1,4 +1,5 @@
 import { game } from "./game.js";
+import { createAndAddOptionsButton } from "./options-drop-down-btn.js";
 import { computer } from "./computer.js";
 import { activateNewGame } from "./activate-new-game.js";
 
@@ -7,11 +8,13 @@ export const displayController = (function () {
     window.scrollTo(0, 0);
 
     const gameDiv = document.querySelector(".game-div");
+    const topLineMenuDiv = document.querySelector(".top-line-menu-div");
     const opponentShipsDiv = document.querySelector(".opponent-ships-div");
 
-    // clear gameDiv & opponent ships div
+    // clear gameDiv, topLineMenuDiv, & opponent ships div
 
     gameDiv.textContent = "";
+    topLineMenuDiv.textContent = "";
     opponentShipsDiv.textContent = "";
 
     // create column and row label arrays
@@ -70,6 +73,10 @@ export const displayController = (function () {
       const opponentGameboard = opponent.gameboard;
       const opponentBoard = opponentGameboard.getBoard();
       const opponentShips = opponentGameboard.ships;
+
+      // add 'options' button to top line
+
+      createAndAddOptionsButton();
 
       // create game info text & add to gameDiv
 

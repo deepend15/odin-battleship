@@ -51,9 +51,70 @@ h5 {
   min-width: min-content;
 }
 
+.top-line {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  align-items: center;
+}
+
 h1 {
   font-size: 2.8rem;
   font-weight: bold;
+  grid-column: 2;
+}
+
+.top-line-menu-div {
+  grid-column: 3;
+  justify-self: end;
+  padding-right: 25px;
+  position: relative;
+}
+
+.top-line-menu-div > button {
+  padding: 8px 20px;
+  font-size: 2rem;
+  background-color: rgb(236, 236, 236);
+  border: 2px outset silver;
+  border-radius: 25px;
+}
+
+.top-line-menu-div .options-btn-hover {
+  background-color: rgb(222, 222, 222);
+}
+
+.top-line-menu-div .options-btn-active {
+  background-color: rgb(203, 203, 203);
+}
+
+.options-button-menu {
+  position: absolute;
+  right: 0px;
+  top: 110%;
+  margin-right: 25px;
+  width: max-content;
+  display: grid;
+  border: 2px solid rgb(203, 203, 203);
+  border-radius: 10px;
+  background-color: rgb(236, 236, 236);
+  padding: 10px 0px;
+  color: rgb(46, 46, 46);
+}
+
+.options-menu-row {
+  padding: 15px 100px 15px 20px;
+  background-color: rgb(236, 236, 236);
+  font-weight: 500;
+  font-size: 1.7rem;
+}
+
+.options-menu-row:hover {
+  background-color: rgb(203, 203, 203);
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .game-div {
@@ -191,7 +252,8 @@ h1 {
 .game-over-buttons > button,
 .main-container > button,
 .player-buttons-div > button,
-#new-game-dialog > form > button {
+#new-game-dialog > form > button,
+.restart-game-dialog-buttons > button {
   background-color: var(--row-column-blue);
   border: 2px outset aqua;
   border-radius: 25px;
@@ -214,14 +276,16 @@ h1 {
 .game-over-buttons > button:hover,
 .main-container > button:hover,
 .player-buttons-div > button:hover,
-#new-game-dialog > form > button:hover {
+#new-game-dialog > form > button:hover,
+.restart-game-dialog-buttons > button:hover {
   background-color: var(--button-hover);
 }
 
 .game-over-buttons > button:active,
 .main-container > button:active,
 .player-buttons-div > button:active,
-#new-game-dialog > form > button:active {
+#new-game-dialog > form > button:active,
+.restart-game-dialog-buttons > button:active {
   background-color: var(--button-active);
   border-style: inset;
 }
@@ -388,6 +452,12 @@ dialog {
   color: rgb(88, 0, 0);
 }
 
+#restart-game-dialog .dialog-cancel-btn {
+  display: grid;
+  place-items: center;
+  padding-left: 0;
+}
+
 .dialog-cancel-btn:hover {
   background-color: rgb(215, 0, 0);
   cursor: default;
@@ -448,4 +518,28 @@ dialog {
   padding: 8px 35px;
   font-size: 1.9rem;
   margin-bottom: -5px;
+}
+
+#restart-game-dialog {
+  padding: 25px 20px 25px 20px;
+  text-align: center;
+  font-size: 2.2rem;
+  line-height: 1.5;
+}
+
+#restart-game-dialog > p:first-child {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.restart-game-dialog-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.restart-game-dialog-buttons > button {
+  padding: 8px 25px;
+  font-size: 1.9rem;
 }
