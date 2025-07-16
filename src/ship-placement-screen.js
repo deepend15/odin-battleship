@@ -49,6 +49,7 @@ export function showShipPlacementScreen(player) {
   const line6 = document.createElement("p");
   line6.textContent = "5. Repeat Steps 1-4 for each remaining ship";
   shipPlacementLines.append(line1, line2, line3, line4, line5, line6);
+  shipPlacementTextDiv2.append(shipPlacementLines);
   gameDiv.append(shipPlacementTextDiv2);
 
   // create 'ship placement' form
