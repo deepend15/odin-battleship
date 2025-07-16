@@ -5,7 +5,7 @@ export function activateNewGame() {
 
   newGameDialog.textContent = "";
 
-  const cancelBtn = document.createElement("div");
+  const cancelBtn = document.createElement("button");
   cancelBtn.classList.add("dialog-cancel-btn");
   cancelBtn.textContent = "X";
   newGameDialog.append(cancelBtn);

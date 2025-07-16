@@ -14,10 +14,10 @@ export function createAndAddOptionsButton() {
   optionsBtnMenu.classList.add("options-button-menu");
   optionsBtnMenu.classList.add("hidden");
 
-  const newGameRow = document.createElement("p");
+  const newGameRow = document.createElement("button");
   newGameRow.classList.add("options-menu-row");
   newGameRow.textContent = "New game";
-  const restartGameRow = document.createElement("p");
+  const restartGameRow = document.createElement("button");
   restartGameRow.classList.add("options-menu-row");
   restartGameRow.textContent = "Restart game";
   optionsBtnMenu.append(newGameRow, restartGameRow);
@@ -32,7 +32,7 @@ export function createAndAddOptionsButton() {
 
     const restartGameDialog = document.createElement("dialog");
     restartGameDialog.setAttribute("id", "restart-game-dialog");
-    const cancelBtn = document.createElement("div");
+    const cancelBtn = document.createElement("button");
     cancelBtn.classList.add("dialog-cancel-btn");
     cancelBtn.textContent = "X";
     restartGameDialog.append(cancelBtn);
