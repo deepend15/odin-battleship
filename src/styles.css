@@ -108,6 +108,7 @@ h1 {
   font-weight: 500;
   font-size: 1.7rem;
   border: none;
+  text-align: left;
 }
 
 .options-menu-row:hover {
