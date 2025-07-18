@@ -7,4 +7,5 @@ export class PlaceShipmentScreen {
   }
 
   activeShip = null;
+  selectedStartingSquare = null;
 }
