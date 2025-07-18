@@ -18,6 +18,9 @@ html {
   --row-column-blue: rgb(230, 247, 254);
   --button-hover: rgb(208, 238, 250);
   --button-active: rgb(176, 230, 252);
+  --gray-button-bg-color: rgb(236, 236, 236);
+  --gray-button-hover: rgb(222, 222, 222);
+  --gray-button-active: rgb(203, 203, 203);
 }
 
 body {
@@ -75,17 +78,17 @@ h1 {
 .top-line-menu-div > button {
   padding: 8px 20px;
   font-size: 2rem;
-  background-color: rgb(236, 236, 236);
+  background-color: var(--gray-button-bg-color);
   border: 2px outset silver;
   border-radius: 25px;
 }
 
 .top-line-menu-div .options-btn-hover {
-  background-color: rgb(222, 222, 222);
+  background-color: var(--gray-button-hover);
 }
 
 .top-line-menu-div .options-btn-active {
-  background-color: rgb(203, 203, 203);
+  background-color: var(--gray-button-active);
 }
 
 .options-button-menu {
@@ -95,16 +98,16 @@ h1 {
   margin-right: 25px;
   width: max-content;
   display: grid;
-  border: 2px solid rgb(203, 203, 203);
+  border: 2px solid var(--gray-button-active);
   border-radius: 10px;
-  background-color: rgb(236, 236, 236);
+  background-color: var(--gray-button-bg-color);
   padding: 10px 0px;
   color: rgb(46, 46, 46);
 }
 
 .options-menu-row {
   padding: 15px 100px 15px 20px;
-  background-color: rgb(236, 236, 236);
+  background-color: var(--gray-button-bg-color);
   font-weight: 500;
   font-size: 1.7rem;
   border: none;
@@ -125,6 +128,100 @@ h1 {
   row-gap: 30px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.ship-placement-section {
+  width: 500px;
+  display: grid;
+  gap: 35px;
+  grid-template-rows: repeat(2, max-content);
+}
+
+.ship-placement-text-div {
+  font-size: 2.4rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.ship-selection-div {
+  display: grid;
+  gap: 25px;
+}
+
+.ship-selection-button {
+  font-size: 1.9rem;
+  width: max-content;
+  padding: 8px 10px;
+  background-color: var(--row-column-blue);
+  border: 2px dotted darkblue;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 0 5px silver;
+}
+
+.ship-selection-button > p {
+  width: 110px;
+  text-align: left;
+}
+
+.ship-selection-button.active-ship {
+  border-style: solid;
+  box-shadow: 0 0 10px gray;
+}
+
+.ship-selection-button.inactive-ship {
+  background-color: var(--gray-button-bg-color);
+  border-color: black;
+  color: gray;
+  div {
+    div {
+      background-color: gray;
+    }
+  }
+}
+
+.ship-selection-button.ship-hover {
+  box-shadow: 0 0 10px gray;
+  cursor: pointer;
+}
+
+.ship-placement-buttons {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.ship-placement-buttons > button {
+  font-size: 1.6rem;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 2px outset silver;
+  background: linear-gradient(
+    to bottom right,
+    rgb(223, 49, 223),
+    rgb(0, 255, 170)
+  );
+  color: rgb(47, 0, 29);
+  font-weight: 500;
+  box-shadow: 0 0 5px silver;
+}
+
+.ship-placement-buttons > button:hover {
+  box-shadow: 0 0 6px gray;
+}
+
+.ship-placement-buttons > button:active {
+  border-style: inset;
 }
 
 .info-div {
@@ -299,11 +396,6 @@ h1 {
   justify-items: center;
 }
 
-h2 {
-  font-size: 2.2rem;
-  font-weight: 500;
-}
-
 .board-div {
   display: grid;
   grid-template-columns: 1fr 10fr;
@@ -375,6 +467,27 @@ h2 {
   font-weight: bold;
 }
 
+.board-div.inactive-board {
+  .column-labels {
+    p {
+      background-color: var(--gray-button-bg-color);
+      color: gray;
+    }
+  }
+  .row-labels {
+    p {
+      background-color: var(--gray-button-bg-color);
+      color: gray;
+    }
+  }
+  .board {
+    background-color: var(--gray-button-bg-color);
+    .square {
+      background-color: var(--gray-button-bg-color);
+    }
+  }
+}
+
 .active-player-ship {
   background-color: darkblue;
   color: white;
@@ -401,7 +514,7 @@ h2 {
   cursor: pointer;
 }
 
-.opponent-ships-div {
+.bottom-div {
   display: flex;
   column-gap: 30px;
   row-gap: 20px;

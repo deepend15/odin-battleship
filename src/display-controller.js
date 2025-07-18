@@ -1,5 +1,6 @@
 import { game } from "./game.js";
 import { activateNewGame } from "./activate-new-game.js";
+import { PlaceShipmentScreen } from "./ship-placement-screen-class.js";
 import { showShipPlacementScreen } from "./ship-placement-screen.js";
 import { createAndAddOptionsButton } from "./options-drop-down-btn.js";
 import { computer } from "./computer.js";
@@ -10,7 +11,7 @@ export const displayController = (function () {
 
     const gameDiv = document.querySelector(".game-div");
     const topLineMenuDiv = document.querySelector(".top-line-menu-div");
-    const opponentShipsDiv = document.querySelector(".opponent-ships-div");
+    const bottomDiv = document.querySelector(".bottom-div");
 
     // create column and row label arrays
 
@@ -21,7 +22,7 @@ export const displayController = (function () {
 
     gameDiv.textContent = "";
     topLineMenuDiv.textContent = "";
-    opponentShipsDiv.textContent = "";
+    bottomDiv.textContent = "";
 
     // create initial page load display
 
@@ -78,7 +79,8 @@ export const displayController = (function () {
       // show ship-placement screen if game is in that status
 
       if (game.getGameStatus() === "ship-placement") {
-        showShipPlacementScreen(activePlayer);
+        const player1PlaceShipmentScreen = new PlaceShipmentScreen(activePlayer, "click-ship");
+        showShipPlacementScreen(player1PlaceShipmentScreen);
       } else {
         // add 'options' button & menu to top line
 
@@ -442,10 +444,10 @@ export const displayController = (function () {
 
         // fill in opponent ship count
 
-        opponentShipsDiv.classList.add("opponent-ships-div");
-        const opponentShipsDivText = document.createElement("p");
-        opponentShipsDivText.textContent = `Opponent ships remaining:`;
-        opponentShipsDiv.append(opponentShipsDivText);
+        bottomDiv.classList.add("bottom-div");
+        const bottomDivText = document.createElement("p");
+        bottomDivText.textContent = `Opponent ships remaining:`;
+        bottomDiv.append(bottomDivText);
 
         // without the below code, if the game ends and the opponent has no more ships remaining, the
         // empty "opponent ships" section at the bottom of the page might shift the other elements on
@@ -454,7 +456,7 @@ export const displayController = (function () {
         if (opponentGameboard.allShipsSunk()) {
           const emptySquareDiv = document.createElement("div");
           emptySquareDiv.classList.add("empty-square-div");
-          opponentShipsDiv.append(emptySquareDiv);
+          bottomDiv.append(emptySquareDiv);
         }
 
         opponentShips.forEach((ship) => {
@@ -466,7 +468,7 @@ export const displayController = (function () {
               squareDiv.textContent = ship.length.toString();
               shipDiv.append(squareDiv);
             }
-            opponentShipsDiv.append(shipDiv);
+            bottomDiv.append(shipDiv);
           }
         });
       }
