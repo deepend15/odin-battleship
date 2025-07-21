@@ -1,4 +1,8 @@
+import { possiblePositions } from "./possible-ship-positions";
+
 export function showShipPlacementScreen(playerScreen) {
+  window.scrollTo(0, 0);
+
   const player = playerScreen.player;
   const playerShips = player.gameboard.ships;
   const screenStatus = playerScreen.status;
@@ -44,6 +48,10 @@ export function showShipPlacementScreen(playerScreen) {
       break;
     case "starting-square":
       line1.textContent = "Click a starting square on your board.";
+      break;
+    case "ending-square":
+      line1.textContent =
+        "Click an available position on your board to place your ship.";
       break;
   }
 
@@ -224,10 +232,10 @@ export function showShipPlacementScreen(playerScreen) {
   // });
 
   // create board
+  const playerBoard = player.gameboard.getBoard();
 
   const playerBoardDiv = document.createElement("div");
   playerBoardDiv.classList.add("board-div");
-  if (screenStatus === "click-ship") playerBoardDiv.classList.add("inactive-board");
   const columnLabels = document.createElement("div");
   columnLabels.classList.add("column-labels");
   for (let i = 0; i < 10; i++) {
@@ -245,10 +253,157 @@ export function showShipPlacementScreen(playerScreen) {
   const blankBoardDiv = document.createElement("div");
   blankBoardDiv.classList.add("board");
   playerBoardDiv.append(columnLabels, rowLabels, blankBoardDiv);
-  for (let i = 0; i < 100; i++) {
-    const newSquare = document.createElement("div");
-    newSquare.classList.add("square");
-    blankBoardDiv.append(newSquare);
-  }
+
+  playerBoard.forEach((row, index) => {
+    let rowIndex = index;
+    row.forEach((square, index) => {
+      const newSquare = document.createElement("div");
+      newSquare.classList.add("square");
+      newSquare.dataset.row = rowIndex;
+      newSquare.dataset.column = index;
+
+      blankBoardDiv.append(newSquare);
+
+      if (screenStatus === "ending-square") {
+        const newSquareCoordinates = [
+          Number(newSquare.dataset.row),
+          Number(newSquare.dataset.column),
+        ];
+
+        if (
+          newSquareCoordinates[0] === playerScreen.selectedStartingSquare[0] &&
+          newSquareCoordinates[1] === playerScreen.selectedStartingSquare[1]
+        ) {
+          newSquare.classList.add("neutral-square");
+        } else {
+          const startingSquarePossiblePositions = possiblePositions(
+            playerScreen.activeShip,
+            playerScreen.selectedStartingSquare,
+          );
+
+          function isIn(smallArray, largeArray) {
+            const match = largeArray.filter(
+              (array) =>
+                array[0] === smallArray[0] && array[1] === smallArray[1],
+            );
+            if (match.length !== 0) return true;
+            return false;
+          }
+
+          if (
+            startingSquarePossiblePositions.firstPosition !== null &&
+            isIn(
+              newSquareCoordinates,
+              startingSquarePossiblePositions.firstPosition,
+            )
+          ) {
+            newSquare.classList.add("position-1");
+          } else if (
+            startingSquarePossiblePositions.secondPosition !== null &&
+            isIn(
+              newSquareCoordinates,
+              startingSquarePossiblePositions.secondPosition,
+            )
+          ) {
+            newSquare.classList.add("position-2");
+          } else if (
+            startingSquarePossiblePositions.thirdPosition !== null &&
+            isIn(
+              newSquareCoordinates,
+              startingSquarePossiblePositions.thirdPosition,
+            )
+          ) {
+            newSquare.classList.add("position-3");
+          } else if (
+            startingSquarePossiblePositions.fourthPosition !== null &&
+            isIn(
+              newSquareCoordinates,
+              startingSquarePossiblePositions.fourthPosition,
+            )
+          ) {
+            newSquare.classList.add("position-4");
+          } else {
+            newSquare.classList.add("inactive-square");
+          }
+        }
+      }
+    });
+  });
+
   gameDiv.append(playerBoardDiv);
+
+  if (screenStatus === "click-ship")
+    playerBoardDiv.classList.add("inactive-board");
+  if (screenStatus === "starting-square") {
+    const boardSquares = document.querySelectorAll(".square");
+
+    function toggleSquareHover(e) {
+      e.target.classList.toggle("hover");
+    }
+
+    boardSquares.forEach((square) => {
+      square.addEventListener("mouseover", toggleSquareHover);
+      square.addEventListener("mouseout", toggleSquareHover);
+
+      square.addEventListener("click", (e) => {
+        playerScreen.selectedStartingSquare = [
+          Number(e.target.dataset.row),
+          Number(e.target.dataset.column),
+        ];
+        playerScreen.status = "ending-square";
+        showShipPlacementScreen(playerScreen);
+      });
+    });
+  }
+  if (screenStatus === "ending-square") {
+    let position1Squares = [];
+    let position2Squares = [];
+    let position3Squares = [];
+    let position4Squares = [];
+
+    const boardSquares = document.querySelectorAll(".square");
+
+    boardSquares.forEach((square) => {
+      if (square.classList.contains("position-1"))
+        position1Squares.push(square);
+      if (square.classList.contains("position-2"))
+        position2Squares.push(square);
+      if (square.classList.contains("position-3"))
+        position3Squares.push(square);
+      if (square.classList.contains("position-4"))
+        position4Squares.push(square);
+    });
+
+    const positionSquareGroups = [
+      position1Squares,
+      position2Squares,
+      position3Squares,
+      position4Squares,
+    ];
+
+    positionSquareGroups.forEach((group) => {
+      if (group.length !== 0) {
+        group.forEach((square) => {
+          square.addEventListener("mouseover", () => {
+            const neutralSquare = document.querySelector(".neutral-square");
+            neutralSquare.classList.toggle("position-group-hover");
+            neutralSquare.textContent = playerScreen.activeShip.length;
+            group.forEach((square) => {
+              square.classList.toggle("position-group-hover");
+              square.textContent = playerScreen.activeShip.length;
+            });
+          });
+          square.addEventListener("mouseout", () => {
+            const neutralSquare = document.querySelector(".neutral-square");
+            neutralSquare.classList.toggle("position-group-hover");
+            neutralSquare.textContent = "";
+            group.forEach((square) => {
+              square.classList.toggle("position-group-hover");
+              square.textContent = "";
+            });
+          });
+        });
+      }
+    });
+  }
 }

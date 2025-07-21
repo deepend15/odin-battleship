@@ -467,6 +467,30 @@ h2 {
   font-weight: bold;
 }
 
+.square.inactive-square {
+  background-color: var(--gray-button-active);
+}
+
+.neutral-square {
+  border: 3px dashed rgb(255, 255, 0);
+}
+
+.position-1 {
+  border: 3px dashed rgb(255, 52, 86);
+}
+
+.position-2 {
+  border: 3px dashed rgb(61, 190, 14);
+}
+
+.position-3 {
+  border: 3px dashed rgb(247, 35, 247);
+}
+
+.position-4 {
+  border: 3px dashed rgb(207, 97, 7);
+}
+
 .board-div.inactive-board {
   .column-labels {
     p {
@@ -488,10 +512,15 @@ h2 {
   }
 }
 
-.active-player-ship {
+.active-player-ship,
+.square.position-group-hover {
   background-color: darkblue;
   color: white;
   border: 2px solid silver;
+}
+
+.square.position-group-hover {
+  cursor: pointer;
 }
 
 .hit {
