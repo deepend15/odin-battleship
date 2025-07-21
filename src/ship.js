@@ -11,7 +11,9 @@ export function createShips() {
 
     let hits = 0;
 
-    return { isSunk, hit, hits };
+    let placed = false;
+
+    return { isSunk, hit, hits, placed };
   }
 
   const ships = [

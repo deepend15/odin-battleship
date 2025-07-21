@@ -134,6 +134,7 @@ h1 {
 h2 {
   font-size: 2.2rem;
   font-weight: 500;
+  line-height: 1.5;
 }
 
 .ship-placement-section {
@@ -152,6 +153,24 @@ h2 {
 .ship-selection-div {
   display: grid;
   gap: 25px;
+}
+
+.ship-selection-line {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.ship-selection-line > p {
+  font-size: 1.6rem;
+}
+
+.placed-text-placed {
+  color: green;
+}
+
+.placed-text-not-placed {
+  color: red;
 }
 
 .ship-selection-button {
@@ -198,7 +217,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 25px;
 }
 
 .ship-placement-buttons > button {
@@ -206,14 +225,27 @@ h2 {
   padding: 8px 20px;
   border-radius: 10px;
   border: 2px outset silver;
+  font-weight: 500;
+  box-shadow: 0 0 5px silver;
+}
+
+.ship-placement-random-button {
   background: linear-gradient(
     to bottom right,
     rgb(223, 49, 223),
     rgb(0, 255, 170)
   );
   color: rgb(47, 0, 29);
-  font-weight: 500;
-  box-shadow: 0 0 5px silver;
+}
+
+.reset-board-button {
+  background-color: rgb(150, 0, 0);
+  color: white;
+}
+
+.start-game-button {
+  background-color: rgb(45, 203, 45);
+  color: white;
 }
 
 .ship-placement-buttons > button:hover {
@@ -469,6 +501,7 @@ h2 {
 
 .square.inactive-square {
   background-color: var(--gray-button-active);
+  color: gray;
 }
 
 .neutral-square {
@@ -508,6 +541,7 @@ h2 {
     background-color: var(--gray-button-bg-color);
     .square {
       background-color: var(--gray-button-bg-color);
+      color: gray;
     }
   }
 }

@@ -53,30 +53,14 @@ export function showShipPlacementScreen(playerScreen) {
       line1.textContent =
         "Click an available position on your board to place your ship.";
       break;
+    case "game-ready":
+      line1.textContent = 'Click "Start Game" to start the game!';
+      break;
   }
 
-  // const line2 = document.createElement("p");
-  // line2.textContent =
-  //   "2. Click a square on the board to select that ship's starting square (alternatively, you may type in the capital letter and number of the square's coordinates, e.g. A1)";
-  // const line3 = document.createElement("p");
-  // line3.textContent =
-  //   "3. Click a square on the board (or type in the square's coordinates) to select the ship's ending square";
-  // const line4 = document.createElement("p");
-  // line4.textContent = "4. Click OK";
-  // const line5 = document.createElement("p");
-  // line5.textContent = "5. Repeat Steps 1-4 for each remaining ship";
-  // const line6 = document.createElement("p");
-  // line6.textContent = "6. Click the green OK button";
   shipPlacementLines.append(line1);
   shipPlacementTextDiv.append(shipPlacementLines);
-  // const shipPlacementNotes = document.createElement("div");
-  // const note1 = document.createElement("p");
-  // note1.textContent =
-  //   "Make sure the distance between your two squares matches the length of each ship!";
-  // const note2 = document.createElement("p");
-  // note2.textContent = "*Note: Diagonals are not allowed.";
-  // shipPlacementNotes.append(note1, note2);
-  // shipPlacementTextDiv.append(shipPlacementNotes);
+
   shipPlacementSection.append(shipPlacementTextDiv);
 
   // create 'ship selection' div
@@ -84,10 +68,10 @@ export function showShipPlacementScreen(playerScreen) {
   const shipSelectionDiv = document.createElement("div");
   shipSelectionDiv.classList.add("ship-selection-div");
 
-  // const shipSelectionButtonsDiv = document.querySelector("button");
-  // shipSelectionButtonsDiv.classList.add("ship-selections-button-div");
-
   playerShips.forEach((ship) => {
+    const shipSelectionLine = document.createElement("div");
+    shipSelectionLine.classList.add("ship-selection-line");
+
     const shipButton = document.createElement("button");
     shipButton.classList.add("ship-selection-button");
 
@@ -124,114 +108,106 @@ export function showShipPlacementScreen(playerScreen) {
     }
 
     shipButton.append(shipText, displayedShip);
-    shipSelectionDiv.append(shipButton);
+    shipSelectionLine.append(shipButton);
+
+    const placedText = document.createElement("p");
+    let placedSymbol;
+    if (ship.placed === true) {
+      placedText.classList.add("placed-text-placed");
+      placedSymbol = "\u2705";
+    } else {
+      placedText.classList.add("placed-text-not-placed");
+      placedSymbol = "\uD83D\uDDD9";
+    }
+    placedText.textContent = placedSymbol + " placed";
+    shipSelectionLine.append(placedText);
+
+    shipSelectionDiv.append(shipSelectionLine);
   });
 
   shipPlacementSection.append(shipSelectionDiv);
 
+  if (screenStatus === "game-ready") {
+    const shipButtons = document.querySelectorAll(".ship-selection-button");
+    shipButtons.forEach(shipButton => {
+      shipButton.classList.add("inactive-ship");
+    })
+  }
+
   if (screenStatus === "click-ship") {
     const shipButtons = document.querySelectorAll(".ship-selection-button");
     shipButtons.forEach((shipButton) => {
-      function toggleShipHover(e) {
-        e.target.classList.toggle("ship-hover");
-      }
-
-      shipButton.addEventListener("mouseenter", toggleShipHover);
-      shipButton.addEventListener("mouseleave", toggleShipHover);
-
-      shipButton.addEventListener("click", () => {
-        let selectedID;
-        const shipText = shipButton.firstElementChild.textContent;
-        switch (shipText) {
-          case "Carrier:":
-            selectedID = "5";
-            break;
-          case "Battleship:":
-            selectedID = "4";
-            break;
-          case "Destroyer:":
-            selectedID = "3A";
-            break;
-          case "Submarine:":
-            selectedID = "3B";
-            break;
-          case "Patrol Boat:":
-            selectedID = "2";
-            break;
+      if (
+        shipButton.nextElementSibling.classList.contains("placed-text-placed")
+      ) {
+        shipButton.classList.add("inactive-ship");
+      } else {
+        function toggleShipHover(e) {
+          e.target.classList.toggle("ship-hover");
         }
-        const matchingShip = playerShips.filter(
-          (ship) => ship.id === selectedID,
-        )[0];
-        playerScreen.status = "starting-square";
-        playerScreen.activeShip = matchingShip;
-        showShipPlacementScreen(playerScreen);
-      });
+
+        shipButton.addEventListener("mouseenter", toggleShipHover);
+        shipButton.addEventListener("mouseleave", toggleShipHover);
+
+        shipButton.addEventListener("click", () => {
+          let selectedID;
+          const shipText = shipButton.firstElementChild.textContent;
+          switch (shipText) {
+            case "Carrier:":
+              selectedID = "5";
+              break;
+            case "Battleship:":
+              selectedID = "4";
+              break;
+            case "Destroyer:":
+              selectedID = "3A";
+              break;
+            case "Submarine:":
+              selectedID = "3B";
+              break;
+            case "Patrol Boat:":
+              selectedID = "2";
+              break;
+          }
+          const matchingShip = playerShips.filter(
+            (ship) => ship.id === selectedID,
+          )[0];
+          playerScreen.status = "starting-square";
+          playerScreen.activeShip = matchingShip;
+          showShipPlacementScreen(playerScreen);
+        });
+      }
     });
   }
 
   const shipPlacementButtons = document.createElement("div");
   shipPlacementButtons.classList.add("ship-placement-buttons");
-  const shipPlacementRandomBtn = document.createElement("button");
 
-  if (screenStatus === "click-ship")
-    shipPlacementRandomBtn.textContent = "Place my ships for me!";
-  else shipPlacementRandomBtn.textContent = "Place this ship for me!";
-  shipPlacementButtons.append(shipPlacementRandomBtn);
+  if (screenStatus === "game-ready") {
+    const startGameBtn = document.createElement("button");
+    startGameBtn.classList.add("start-game-button");
+    startGameBtn.textContent = "Start Game";
+    shipPlacementButtons.append(startGameBtn);
+  } else {
+    const shipPlacementRandomBtn = document.createElement("button");
+    shipPlacementRandomBtn.classList.add("ship-placement-random-button");
+
+    if (screenStatus === "click-ship")
+      shipPlacementRandomBtn.textContent = "Place my ships for me!";
+    else shipPlacementRandomBtn.textContent = "Place this ship for me!";
+
+    shipPlacementButtons.append(shipPlacementRandomBtn);
+  }
+
+  const resetBoardButton = document.createElement("button");
+  resetBoardButton.classList.add("reset-board-button");
+  resetBoardButton.textContent = "Reset board";
+  shipPlacementButtons.append(resetBoardButton);
+
   shipPlacementSection.append(shipPlacementButtons);
 
-  // const shipPlacementForm = document.createElement("form");
-
-  // const playerShips = player.gameboard.ships;
-  // playerShips.forEach((ship) => {
-  //   const shipDiv = document.createElement("div");
-  //   shipDiv.classList.add("form-ship-section");
-
-  //   const shipLine = document.createElement("div");
-  //   const shipText = document.createElement("p");
-  //   shipText.textContent = "Ship:";
-  //   const displayedShip = document.createElement("div");
-  //   displayedShip.classList.add("ship-div");
-  //   for (let i = 0; i < ship.length; i++) {
-  //     const squareDiv = document.createElement("div");
-  //     squareDiv.textContent = ship.length.toString();
-  //     displayedShip.append(squareDiv);
-  //   }
-  //   shipLine.append(shipText, displayedShip);
-  //   shipDiv.append(shipLine);
-
-  // const square1Line = document.createElement("p");
-  // const square1Label = document.createElement("label");
-  // square1Label.setAttribute("for", `${ship.id}-square1`);
-  // square1Label.textContent = "Square 1:";
-  // const square1Input = document.createElement("input");
-  // square1Input.setAttribute("type", "text");
-  // square1Input.setAttribute("id", `${ship.id}-square1`);
-  // square1Input.setAttribute("name", `${ship.id}-square1`);
-  // square1Input.setAttribute("required", "");
-  // square1Line.append(square1Label, square1Input);
-  // shipDiv.append(square1Line);
-
-  // const square2Line = document.createElement("p");
-  // const square2Label = document.createElement("label");
-  // square2Label.setAttribute("for", `${ship.id}-square2`);
-  // square2Label.textContent = "Square 2:";
-  // const square2Input = document.createElement("input");
-  // square2Input.setAttribute("type", "text");
-  // square2Input.setAttribute("id", `${ship.id}-square2`);
-  // square2Input.setAttribute("name", `${ship.id}-square2`);
-  // square2Input.setAttribute("required", "");
-  // square2Line.append(square2Label, square2Input);
-  // shipDiv.append(square2Line);
-
-  // const shipDivOKBtn = document.createElement("button");
-  // shipDivOKBtn.setAttribute("type", "button");
-  // shipDivOKBtn.textContent = "OK";
-  // shipDiv.append(shipDivOKBtn);
-
-  //   shipPlacementForm.append(shipDiv);
-  // });
-
   // create board
+
   const playerBoard = player.gameboard.getBoard();
 
   const playerBoardDiv = document.createElement("div");
@@ -262,7 +238,19 @@ export function showShipPlacementScreen(playerScreen) {
       newSquare.dataset.row = rowIndex;
       newSquare.dataset.column = index;
 
+      if (square !== null) {
+        if (square.includes("3A") || square.includes("3B"))
+          newSquare.textContent = "3";
+        else newSquare.textContent = square;
+      }
+
       blankBoardDiv.append(newSquare);
+
+      if (screenStatus === "game-ready") {
+        if (!(newSquare.textContent === "")) {
+          newSquare.classList.add("active-player-ship");
+        }
+      }
 
       if (screenStatus === "ending-square") {
         const newSquareCoordinates = [
@@ -277,7 +265,7 @@ export function showShipPlacementScreen(playerScreen) {
           newSquare.classList.add("neutral-square");
         } else {
           const startingSquarePossiblePositions = possiblePositions(
-            playerScreen.activeShip,
+            activeShip,
             playerScreen.selectedStartingSquare,
           );
 
@@ -290,12 +278,23 @@ export function showShipPlacementScreen(playerScreen) {
             return false;
           }
 
+          function occupied(position) {
+            let answer = false;
+            position.forEach((value) => {
+              if (playerBoard[value[0]][value[1]] !== null) {
+                answer = true;
+              }
+            });
+            return answer;
+          }
+
           if (
             startingSquarePossiblePositions.firstPosition !== null &&
             isIn(
               newSquareCoordinates,
               startingSquarePossiblePositions.firstPosition,
-            )
+            ) &&
+            !occupied(startingSquarePossiblePositions.firstPosition)
           ) {
             newSquare.classList.add("position-1");
           } else if (
@@ -303,7 +302,8 @@ export function showShipPlacementScreen(playerScreen) {
             isIn(
               newSquareCoordinates,
               startingSquarePossiblePositions.secondPosition,
-            )
+            ) &&
+            !occupied(startingSquarePossiblePositions.secondPosition)
           ) {
             newSquare.classList.add("position-2");
           } else if (
@@ -311,7 +311,8 @@ export function showShipPlacementScreen(playerScreen) {
             isIn(
               newSquareCoordinates,
               startingSquarePossiblePositions.thirdPosition,
-            )
+            ) &&
+            !occupied(startingSquarePossiblePositions.thirdPosition)
           ) {
             newSquare.classList.add("position-3");
           } else if (
@@ -319,7 +320,8 @@ export function showShipPlacementScreen(playerScreen) {
             isIn(
               newSquareCoordinates,
               startingSquarePossiblePositions.fourthPosition,
-            )
+            ) &&
+            !occupied(startingSquarePossiblePositions.fourthPosition)
           ) {
             newSquare.classList.add("position-4");
           } else {
@@ -342,17 +344,19 @@ export function showShipPlacementScreen(playerScreen) {
     }
 
     boardSquares.forEach((square) => {
-      square.addEventListener("mouseover", toggleSquareHover);
-      square.addEventListener("mouseout", toggleSquareHover);
+      if (square.textContent === "") {
+        square.addEventListener("mouseover", toggleSquareHover);
+        square.addEventListener("mouseout", toggleSquareHover);
 
-      square.addEventListener("click", (e) => {
-        playerScreen.selectedStartingSquare = [
-          Number(e.target.dataset.row),
-          Number(e.target.dataset.column),
-        ];
-        playerScreen.status = "ending-square";
-        showShipPlacementScreen(playerScreen);
-      });
+        square.addEventListener("click", (e) => {
+          playerScreen.selectedStartingSquare = [
+            Number(e.target.dataset.row),
+            Number(e.target.dataset.column),
+          ];
+          playerScreen.status = "ending-square";
+          showShipPlacementScreen(playerScreen);
+        });
+      } else square.classList.add("active-player-ship");
     });
   }
   if (screenStatus === "ending-square") {
@@ -387,10 +391,10 @@ export function showShipPlacementScreen(playerScreen) {
           square.addEventListener("mouseover", () => {
             const neutralSquare = document.querySelector(".neutral-square");
             neutralSquare.classList.toggle("position-group-hover");
-            neutralSquare.textContent = playerScreen.activeShip.length;
+            neutralSquare.textContent = activeShip.length;
             group.forEach((square) => {
               square.classList.toggle("position-group-hover");
-              square.textContent = playerScreen.activeShip.length;
+              square.textContent = activeShip.length;
             });
           });
           square.addEventListener("mouseout", () => {
@@ -401,6 +405,37 @@ export function showShipPlacementScreen(playerScreen) {
               square.classList.toggle("position-group-hover");
               square.textContent = "";
             });
+          });
+          square.addEventListener("click", () => {
+            const selectedSquares = document.querySelectorAll(
+              ".position-group-hover",
+            );
+            const firstSquare = selectedSquares[0];
+            const lastSquare = selectedSquares[selectedSquares.length - 1];
+            player.gameboard.placeShip(
+              activeShip,
+              [
+                Number(firstSquare.dataset.row),
+                Number(firstSquare.dataset.column),
+              ],
+              [
+                Number(lastSquare.dataset.row),
+                Number(lastSquare.dataset.column),
+              ],
+            );
+            const matchingShip = playerShips.filter(
+              (ship) => ship.id === activeShip.id,
+            )[0];
+            matchingShip.placed = true;
+            playerScreen.activeShip = null;
+            playerScreen.selectedStartingSquare = null;
+
+            const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
+            if (nonPlacedShips.length === 0) {
+              playerScreen.status = "game-ready";
+            } else playerScreen.status = "click-ship";
+
+            showShipPlacementScreen(playerScreen);
           });
         });
       }
