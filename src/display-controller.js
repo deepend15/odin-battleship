@@ -18,8 +18,11 @@ export const displayController = (function () {
     const columnLabelsText = "ABCDEFGHIJ".split("");
     const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
 
-    // clear gameDiv, topLineMenuDiv, & opponent ships div
+    // clear h2, gameDiv, topLineMenuDiv, & opponent ships div
 
+    if (gameDiv.previousElementSibling.nodeName === "H2") {
+      gameDiv.previousElementSibling.remove();
+    }
     gameDiv.textContent = "";
     topLineMenuDiv.textContent = "";
     bottomDiv.textContent = "";
@@ -79,7 +82,10 @@ export const displayController = (function () {
       // show ship-placement screen if game is in that status
 
       if (game.getGameStatus() === "ship-placement") {
-        const player1PlaceShipmentScreen = new PlaceShipmentScreen(activePlayer, "click-ship");
+        const player1PlaceShipmentScreen = new PlaceShipmentScreen(
+          activePlayer,
+          "click-ship",
+        );
         showShipPlacementScreen(player1PlaceShipmentScreen);
       } else {
         // add 'options' button & menu to top line
