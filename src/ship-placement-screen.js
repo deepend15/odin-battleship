@@ -1,9 +1,13 @@
-import { possiblePositions } from "./possible-ship-positions";
+import { game } from "./game.js";
+import { possiblePositions } from "./possible-ship-positions.js";
+import { randomShipPlacement } from "./random-ship-placement.js";
+import { displayController } from "./display-controller.js";
 
 export function showShipPlacementScreen(playerScreen) {
-  window.scrollTo(0, 0);
+  // window.scrollTo(0, 0);
 
   const player = playerScreen.player;
+  const player2 = game.getPlayer2();
   const playerShips = player.gameboard.ships;
   const screenStatus = playerScreen.status;
   const activeShip = playerScreen.activeShip;
@@ -129,9 +133,9 @@ export function showShipPlacementScreen(playerScreen) {
 
   if (screenStatus === "game-ready") {
     const shipButtons = document.querySelectorAll(".ship-selection-button");
-    shipButtons.forEach(shipButton => {
+    shipButtons.forEach((shipButton) => {
       shipButton.classList.add("inactive-ship");
-    })
+    });
   }
 
   if (screenStatus === "click-ship") {
@@ -188,13 +192,61 @@ export function showShipPlacementScreen(playerScreen) {
     startGameBtn.classList.add("start-game-button");
     startGameBtn.textContent = "Start Game";
     shipPlacementButtons.append(startGameBtn);
+    startGameBtn.addEventListener("click", () => {
+      if (player2.type === "computer") {
+        const computerShips = player2.gameboard.ships;
+        computerShips.forEach((ship) =>
+          randomShipPlacement(player2).placeInRandomPosition(ship),
+        );
+      }
+      game.setGameStatus("player-turn");
+      displayController.updateScreen();
+    });
   } else {
     const shipPlacementRandomBtn = document.createElement("button");
     shipPlacementRandomBtn.classList.add("ship-placement-random-button");
 
-    if (screenStatus === "click-ship")
+    if (screenStatus === "click-ship") {
       shipPlacementRandomBtn.textContent = "Place my ships for me!";
-    else shipPlacementRandomBtn.textContent = "Place this ship for me!";
+      shipPlacementRandomBtn.addEventListener("click", () => {
+        playerShips.forEach((ship) => {
+          if (!ship.placed)
+            randomShipPlacement(player).placeInRandomPosition(ship);
+        });
+        playerScreen.activeShip = null;
+        playerScreen.selectedStartingSquare = null;
+        playerScreen.status = "game-ready";
+        showShipPlacementScreen(playerScreen);
+      });
+    } else {
+      shipPlacementRandomBtn.textContent = "Place this ship for me!";
+      if (screenStatus === "starting-square") {
+        shipPlacementRandomBtn.addEventListener("click", () => {
+          randomShipPlacement(player).placeInRandomPosition(activeShip);
+          activeShip.placed = true;
+          playerScreen.activeShip = null;
+          playerScreen.selectedStartingSquare = null;
+          const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
+          if (nonPlacedShips.length === 0) {
+            playerScreen.status = "game-ready";
+          } else playerScreen.status = "click-ship";
+          showShipPlacementScreen(playerScreen);
+        });
+      }
+      if (screenStatus === "ending-square") {
+        shipPlacementRandomBtn.addEventListener("click", () => {
+          randomShipPlacement(player).placeInRandomPosition(activeShip, playerScreen.selectedStartingSquare);
+          activeShip.placed = true;
+          playerScreen.activeShip = null;
+          playerScreen.selectedStartingSquare = null;
+          const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
+          if (nonPlacedShips.length === 0) {
+            playerScreen.status = "game-ready";
+          } else playerScreen.status = "click-ship";
+          showShipPlacementScreen(playerScreen);
+        });
+      }
+    }
 
     shipPlacementButtons.append(shipPlacementRandomBtn);
   }
@@ -203,6 +255,15 @@ export function showShipPlacementScreen(playerScreen) {
   resetBoardButton.classList.add("reset-board-button");
   resetBoardButton.textContent = "Reset board";
   shipPlacementButtons.append(resetBoardButton);
+
+  resetBoardButton.addEventListener("click", () => {
+    player.gameboard.clearBoard();
+    playerShips.forEach((ship) => (ship.placed = false));
+    playerScreen.activeShip = null;
+    playerScreen.selectedStartingSquare = null;
+    playerScreen.status = "click-ship";
+    showShipPlacementScreen(playerScreen);
+  });
 
   shipPlacementSection.append(shipPlacementButtons);
 
@@ -241,7 +302,7 @@ export function showShipPlacementScreen(playerScreen) {
       if (square !== null) {
         if (square.includes("3A") || square.includes("3B"))
           newSquare.textContent = "3";
-        else newSquare.textContent = square;
+        else newSquare.textContent = square[0];
       }
 
       blankBoardDiv.append(newSquare);
