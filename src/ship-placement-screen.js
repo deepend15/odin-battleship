@@ -4,8 +4,6 @@ import { randomShipPlacement } from "./random-ship-placement.js";
 import { displayController } from "./display-controller.js";
 
 export function showShipPlacementScreen(playerScreen) {
-  // window.scrollTo(0, 0);
-
   const player = playerScreen.player;
   const player2 = game.getPlayer2();
   const playerShips = player.gameboard.ships;
@@ -131,55 +129,74 @@ export function showShipPlacementScreen(playerScreen) {
 
   shipPlacementSection.append(shipSelectionDiv);
 
-  if (screenStatus === "game-ready") {
+  if (screenStatus === "game-ready" || screenStatus === "click-ship") {
     const shipButtons = document.querySelectorAll(".ship-selection-button");
     shipButtons.forEach((shipButton) => {
-      shipButton.classList.add("inactive-ship");
-    });
-  }
+      function getMatchingShip() {
+        let selectedID;
+        const shipText = shipButton.firstElementChild.textContent;
+        switch (shipText) {
+          case "Carrier:":
+            selectedID = "5";
+            break;
+          case "Battleship:":
+            selectedID = "4";
+            break;
+          case "Destroyer:":
+            selectedID = "3A";
+            break;
+          case "Submarine:":
+            selectedID = "3B";
+            break;
+          case "Patrol Boat:":
+            selectedID = "2";
+            break;
+        }
+        const matchingShip = playerShips.filter(
+          (ship) => ship.id === selectedID,
+        )[0];
+        return matchingShip;
+      }
 
-  if (screenStatus === "click-ship") {
-    const shipButtons = document.querySelectorAll(".ship-selection-button");
-    shipButtons.forEach((shipButton) => {
       if (
         shipButton.nextElementSibling.classList.contains("placed-text-placed")
       ) {
         shipButton.classList.add("inactive-ship");
-      } else {
-        function toggleShipHover(e) {
-          e.target.classList.toggle("ship-hover");
-        }
-
-        shipButton.addEventListener("mouseenter", toggleShipHover);
-        shipButton.addEventListener("mouseleave", toggleShipHover);
-
-        shipButton.addEventListener("click", () => {
-          let selectedID;
-          const shipText = shipButton.firstElementChild.textContent;
-          switch (shipText) {
-            case "Carrier:":
-              selectedID = "5";
-              break;
-            case "Battleship:":
-              selectedID = "4";
-              break;
-            case "Destroyer:":
-              selectedID = "3A";
-              break;
-            case "Submarine:":
-              selectedID = "3B";
-              break;
-            case "Patrol Boat:":
-              selectedID = "2";
-              break;
-          }
-          const matchingShip = playerShips.filter(
-            (ship) => ship.id === selectedID,
-          )[0];
-          playerScreen.status = "starting-square";
+        const editShipButton = document.createElement("button");
+        editShipButton.classList.add("edit-ship-button");
+        editShipButton.textContent = "re-place";
+        shipButton.parentElement.append(editShipButton);
+        editShipButton.addEventListener("click", () => {
+          const matchingShip = getMatchingShip();
+          playerBoard.forEach((row) => {
+            for (let i = 0; i < row.length; i++) {
+              if (Array.isArray(row[i])) {
+                if (row[i].includes(matchingShip.id)) {
+                  row[i] = null;
+                }
+              }
+            }
+          });
+          matchingShip.placed = false;
           playerScreen.activeShip = matchingShip;
+          playerScreen.status = "starting-square";
           showShipPlacementScreen(playerScreen);
         });
+      } else {
+        if (screenStatus === "click-ship") {
+          function toggleShipHover(e) {
+            e.target.classList.toggle("ship-hover");
+          }
+
+          shipButton.addEventListener("mouseenter", toggleShipHover);
+          shipButton.addEventListener("mouseleave", toggleShipHover);
+
+          shipButton.addEventListener("click", () => {
+            playerScreen.status = "starting-square";
+            playerScreen.activeShip = getMatchingShip();
+            showShipPlacementScreen(playerScreen);
+          });
+        }
       }
     });
   }
@@ -235,7 +252,10 @@ export function showShipPlacementScreen(playerScreen) {
       }
       if (screenStatus === "ending-square") {
         shipPlacementRandomBtn.addEventListener("click", () => {
-          randomShipPlacement(player).placeInRandomPosition(activeShip, playerScreen.selectedStartingSquare);
+          randomShipPlacement(player).placeInRandomPosition(
+            activeShip,
+            playerScreen.selectedStartingSquare,
+          );
           activeShip.placed = true;
           playerScreen.activeShip = null;
           playerScreen.selectedStartingSquare = null;
@@ -410,12 +430,58 @@ export function showShipPlacementScreen(playerScreen) {
         square.addEventListener("mouseout", toggleSquareHover);
 
         square.addEventListener("click", (e) => {
-          playerScreen.selectedStartingSquare = [
+          const startingSquare = [
             Number(e.target.dataset.row),
             Number(e.target.dataset.column),
           ];
-          playerScreen.status = "ending-square";
-          showShipPlacementScreen(playerScreen);
+
+          function isValid(startingSquare) {
+            const startingSquarePossiblePositionsObject = possiblePositions(
+              activeShip,
+              startingSquare,
+            );
+            const startingSquarePossiblePositions = Object.values(
+              startingSquarePossiblePositionsObject,
+            );
+            const validStartingSquarePossiblePositions =
+              startingSquarePossiblePositions.filter((array) => array !== null);
+
+            function occupied(position) {
+              let answer = false;
+              position.forEach((value) => {
+                if (playerBoard[value[0]][value[1]] !== null) {
+                  answer = true;
+                }
+              });
+              return answer;
+            }
+
+            const occupiedValidPositions = [];
+
+            validStartingSquarePossiblePositions.forEach((position) => {
+              if (occupied(position)) {
+                occupiedValidPositions.push(position);
+              }
+            });
+
+            if (
+              occupiedValidPositions.length ===
+              validStartingSquarePossiblePositions.length
+            )
+              return false;
+            else return true;
+          }
+          if (isValid(startingSquare)) {
+            playerScreen.selectedStartingSquare = startingSquare;
+            playerScreen.status = "ending-square";
+            showShipPlacementScreen(playerScreen);
+          } else {
+            const shipPlacementLines = document.querySelector(
+              ".ship-placement-lines",
+            );
+            shipPlacementLines.textContent =
+              "Invalid square! Choose another starting square.";
+          }
         });
       } else square.classList.add("active-player-ship");
     });
