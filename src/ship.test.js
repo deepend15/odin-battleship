@@ -25,6 +25,12 @@ describe("Ship test suite", () => {
     }
   });
 
+  test('Each ship created by createShips() has a "placed" property that initiates with value "false"', () => {
+    for (const ship of ships) {
+      expect(ship.placed).toBeFalsy;
+    }
+  });
+
   test('Each ship created by createShips() has a "hits" property that initiates with value "0"', () => {
     for (const ship of ships) {
       expect(ship.hits).toBe(0);
