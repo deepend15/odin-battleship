@@ -218,6 +218,31 @@ export function showShipPlacementScreen(playerScreen) {
       }
       game.setGameStatus("player-turn");
       displayController.updateScreen();
+      // function computerWinGame() {
+      //   const playerBoard = player.gameboard.getBoard();
+
+      //   const ids = ["2", "3A", "3B", "4", "5"];
+
+      //   playerBoard.forEach((row, index) => {
+      //     const rowIndex = index;
+      //     row.forEach((square, index) => {
+      //       if (Array.isArray(square)) {
+      //         ids.forEach((id) => {
+      //           if (square.includes(id)) {
+      //             player.gameboard.receiveAttack([rowIndex, index]);
+      //           }
+      //         });
+      //       }
+      //     });
+      //   });
+
+      //   player.lastAttack = ["J", "10"];
+      //   player.lastAttackResult = "MISS";
+      //   game.setGameStatus("game-over");
+      //   displayController.updateScreen();
+      // }
+
+      // computerWinGame();
     });
   } else {
     const shipPlacementRandomBtn = document.createElement("button");

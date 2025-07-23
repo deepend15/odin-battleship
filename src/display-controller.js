@@ -256,6 +256,7 @@ export const displayController = (function () {
 
             playAgainOKBtn.addEventListener("click", () => {
               game.startGame(game.getPlayer1().name, game.getPlayer2().name);
+              game.setGameStatus("ship-placement");
               displayController.updateScreen();
             });
             changePlayersBtn.addEventListener("click", activateNewGame);
