@@ -64,9 +64,57 @@ export function createAndAddOptionsButton() {
     });
 
     confirmYesBtn.addEventListener("click", () => {
+      const activePlayer = game.getActivePlayer();
+      const player1Ships = player1.gameboard.ships;
+      const player2Ships = player2.gameboard.ships;
+      const player1Board = player1.gameboard.getBoard();
+      const player2Board = player2.gameboard.getBoard();
+
       restartGameDialog.close();
       restartGameDialog.remove();
-      game.startGame(player1.name, player2.name);
+
+      if (activePlayer.id === "Player 2") game.switchPlayerTurn();
+
+      player1Ships.forEach((ship) => (ship.hits = 0));
+      player2Ships.forEach((ship) => (ship.hits = 0));
+
+      const ids = ["2", "3A", "3B", "4", "5"];
+      function containsID(array) {
+        let response = false;
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          if (array.includes(id)) {
+            response = true;
+            break;
+          }
+        }
+        return response;
+      }
+
+      player1Board.forEach((row) => {
+        for (let i = 0; i < row.length; i++) {
+          if (Array.isArray(row[i])) {
+            if (!containsID(row[i])) row[i] = null;
+            else {
+              const idArray = row[i].filter((item) => ids.includes(item));
+              row[i] = idArray;
+            }
+          }
+        }
+      });
+      player2Board.forEach((row) => {
+        for (let i = 0; i < row.length; i++) {
+          if (Array.isArray(row[i])) {
+            if (!containsID(row[i])) row[i] = null;
+            else {
+              const idArray = row[i].filter((item) => ids.includes(item));
+              row[i] = idArray;
+            }
+          }
+        }
+      });
+
+      game.setGameStatus("player-turn");
       displayController.updateScreen();
     });
   });
