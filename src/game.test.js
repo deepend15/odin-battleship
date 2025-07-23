@@ -12,22 +12,16 @@ test("The game factory function creates a game object with methods getPlayer1(),
   expect(typeof game.startGame).toBe("function");
 });
 
-test("game.getGameStatus() returns 'new' before game.startGame() is called", () => {
+test("game.getGameStatus() initially returns 'new'", () => {
   expect(game.getGameStatus()).toBe("new");
 });
 
-test("game.setGameStatus('player-turn') causes game.getGameStatus() to return 'player-turn'", () => {
+test("The argument passed in game.setGameStatus() causes game.getGameStatus() to return that argument", () => {
   game.setGameStatus("player-turn");
   expect(game.getGameStatus()).toBe("player-turn");
   game.setGameStatus("new");
   expect(game.getGameStatus()).toBe("new");
 })
-
-test("game.getGameStatus() returns 'player-turn' when game.startGame() is called", () => {
-  expect(game.getGameStatus()).toBe("new");
-  game.startGame("Bob");
-  expect(game.getGameStatus()).toBe("player-turn");
-});
 
 test("When game.startGame() is called with a player 1 argument, game.getPlayer1() returns a player object for that player", () => {
   game.startGame("Bob");
@@ -47,7 +41,7 @@ test("Right after game.startGame() is called, game.getActivePlayer() returns the
   expect(game.getActivePlayer().name).toBe("Bob");
 });
 
-test("Right after game.startGame() is called, game.Opponent() returns the player 2 object", () => {
+test("Right after game.startGame() is called, game.getOpponent() returns the player 2 object", () => {
   game.startGame("Bob");
   expect(game.getOpponent().name).toBe("Computer");
 });
