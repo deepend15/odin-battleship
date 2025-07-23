@@ -47,8 +47,6 @@ export function computer() {
       }
     }
 
-    console.log(randomCoordinates);
-
     humanPlayerGameboard.receiveAttack(randomCoordinates);
 
     const columnLabels = "ABCDEFGHIJ".split("");
