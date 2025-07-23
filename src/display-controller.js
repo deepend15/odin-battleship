@@ -212,7 +212,7 @@ export const displayController = (function () {
 
             function initiateNextTurn() {
               if (game.getGameStatus() === "active-player-attack") {
-                if (opponent.name === "Computer") {
+                if (opponent.type === "computer") {
                   computer().computerAttack();
                   if (activePlayerGameboard.allShipsSunk())
                     game.setGameStatus("game-over");

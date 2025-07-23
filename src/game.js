@@ -26,10 +26,9 @@ export const game = (function () {
   const getGameStatus = () => gameStatus;
   const setGameStatus = (value) => (gameStatus = value);
 
-  const startGame = (player1Name, player2name = "Computer") => {
+  const startGame = (player1Name, player2name = "Computer", player2type = "computer") => {
     player1 = new Player(player1Name, 1, "human");
-    if (player2name === "Computer")
-      player2 = new Player(player2name, 2, "computer");
+    player2 = new Player(player2name, 2, player2type)
 
     activePlayer = player1;
     opponent = player2;
