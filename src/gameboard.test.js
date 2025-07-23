@@ -34,6 +34,7 @@ describe("Gameboard test suite", () => {
       expect(ship).toHaveProperty("id");
       expect(ship).toHaveProperty("length");
       expect(ship).toHaveProperty("hits");
+      expect(ship).toHaveProperty("placed");
       expect(typeof ship.hit).toBe("function");
       expect(typeof ship.isSunk).toBe("function");
     });
