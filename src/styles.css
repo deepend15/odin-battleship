@@ -49,7 +49,7 @@ h5 {
 .main-container {
   padding: 15px 50px 25px 50px;
   display: grid;
-  gap: 35px;
+  gap: 30px;
   justify-items: center;
   min-width: min-content;
 }
@@ -128,7 +128,8 @@ h1 {
   row-gap: 30px;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  /* align-items: center; */
 }
 
 h2 {
@@ -148,6 +149,9 @@ h2 {
   font-size: 2.4rem;
   text-align: center;
   font-weight: bold;
+  height: 55px;
+  display: grid;
+  align-items: center;
 }
 
 .ship-selection-div {
@@ -231,7 +235,7 @@ h2 {
 }
 
 .ship-placement-buttons {
-  margin-top: 25px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -448,6 +452,7 @@ h2 {
 }
 
 .board-div {
+  align-self: flex-start;
   display: grid;
   grid-template-columns: 1fr 10fr;
   grid-template-rows: 1fr 10fr;
