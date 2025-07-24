@@ -236,9 +236,10 @@ export function showShipPlacementScreen(playerScreen) {
       //     });
       //   });
 
-      //   player.lastAttack = ["J", "10"];
-      //   player.lastAttackResult = "MISS";
+      //   player2.lastAttack = ["J", "10"];
+      //   player2.lastAttackResult = "MISS";
       //   game.setGameStatus("game-over");
+      //   game.setWinner(player2);
       //   displayController.updateScreen();
       // }
 

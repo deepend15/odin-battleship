@@ -153,14 +153,27 @@ export const displayController = (function () {
           infoDivTextDiv.classList.add("info-div-player-attack");
           const infoDivTextDivTop = document.createElement("div");
           infoDivTextDivTop.classList.add("info-div-text-div-top");
-          if (game.getGameStatus() === "computer-attack") {
+          if (
+            game.getGameStatus() === "computer-attack" ||
+            (game.getGameStatus() === "game-over" &&
+              game.getWinner().type === "computer")
+          ) {
             infoDivTextDivFirstLine.textContent = `The computer attacked: ${opponent.lastAttack.join("")}`;
-          } else {
+          } else if (
+            game.getGameStatus() === "active-player-attack" ||
+            (game.getGameStatus() === "game-over" &&
+              game.getWinner().id === activePlayer.id)
+          ) {
             infoDivTextDivFirstLine.textContent = `You attacked: ${activePlayer.lastAttack.join("")}`;
           }
+
           const infoDivTextDivSecondLine = document.createElement("p");
           let result;
-          if (game.getGameStatus() === "computer-attack") {
+          if (
+            game.getGameStatus() === "computer-attack" ||
+            (game.getGameStatus() === "game-over" &&
+              game.getWinner().type === "computer")
+          ) {
             if (opponent.lastAttackResult === "SINK") result = "HIT";
             else result = opponent.lastAttackResult;
           } else {
@@ -214,10 +227,92 @@ export const displayController = (function () {
               if (game.getGameStatus() === "active-player-attack") {
                 if (opponent.type === "computer") {
                   computer().computerAttack();
-                  if (activePlayerGameboard.allShipsSunk())
+
+                  if (activePlayerGameboard.allShipsSunk()) {
                     game.setGameStatus("game-over");
-                  else game.setGameStatus("computer-attack");
+                    game.setWinner(opponent);
+                  } else game.setGameStatus("computer-attack");
+
                   displayController.updateScreen();
+
+                  const infoDivTextDivTop = document.querySelector(
+                    ".info-div-text-div-top",
+                  );
+                  const infoDivTextDivTop1 =
+                    infoDivTextDivTop.firstElementChild;
+                  const infoDivTextDivTop2 =
+                    infoDivTextDivTop1.nextElementSibling;
+
+                  if (game.getGameStatus() === "game-over") {
+                    const gameOverDiv =
+                      document.querySelector(".game-over-div");
+                    const gameOverButtonsDiv =
+                      document.querySelector(".game-over-buttons");
+
+                    setTimeout(() => {
+                      infoDivTextDivTop1.classList.remove("hidden");
+                    }, 1000);
+
+                    setTimeout(() => {
+                      infoDivTextDivTop2.classList.remove("hidden");
+                    }, 2500);
+
+                    setTimeout(() => {
+                      gameOverDiv.classList.remove("hidden");
+                    }, 4000);
+
+                    setTimeout(() => {
+                      gameOverButtonsDiv.classList.remove("hidden");
+                    }, 4000);
+                  }
+
+                  if (game.getGameStatus() === "computer-attack") {
+                    let sinkTextDiv;
+                    let infoDivNextTurn;
+
+                    if (opponent.lastAttackResult === "SINK") {
+                      sinkTextDiv = document.querySelector(".sink-text-div");
+                      infoDivNextTurn = sinkTextDiv.nextElementSibling;
+                    } else
+                      infoDivNextTurn = infoDivTextDivTop.nextElementSibling;
+
+                    const infoDivTextDivBottom = document.querySelector(
+                      ".info-div-text-div-bottom",
+                    );
+
+                    const waitSquares = document.querySelectorAll(".wait");
+                    setTimeout(() => {
+                      waitSquares.forEach((square) =>
+                        square.classList.remove("wait"),
+                      );
+                    }, 1000);
+
+                    setTimeout(() => {
+                      infoDivTextDivTop1.classList.remove("hidden");
+                    }, 1000);
+                    setTimeout(() => {
+                      infoDivTextDivTop2.classList.remove("hidden");
+                    }, 2500);
+
+                    if (opponent.lastAttackResult === "SINK") {
+                      setTimeout(() => {
+                        sinkTextDiv.classList.remove("hidden");
+                      }, 4000);
+                      setTimeout(() => {
+                        infoDivNextTurn.classList.remove("hidden");
+                      }, 5500);
+                      setTimeout(() => {
+                        infoDivTextDivBottom.classList.remove("hidden");
+                      }, 5500);
+                    } else {
+                      setTimeout(() => {
+                        infoDivNextTurn.classList.remove("hidden");
+                      }, 4000);
+                      setTimeout(() => {
+                        infoDivTextDivBottom.classList.remove("hidden");
+                      }, 4000);
+                    }
+                  }
                 } else {
                   game.switchPlayerTurn();
                   game.setGameStatus("player-turn");
@@ -255,7 +350,15 @@ export const displayController = (function () {
             infoDivTextDiv.append(gameOverDiv, gameOverButtonsDiv);
 
             playAgainOKBtn.addEventListener("click", () => {
-              game.startGame(game.getPlayer1().name, game.getPlayer2().name);
+              if (game.getPlayer2().type === "computer") {
+                game.startGame(game.getPlayer1().name);
+              } else {
+                game.startGame(
+                  game.getPlayer1().name,
+                  game.getPlayer2().name,
+                  "human",
+                );
+              }
               game.setGameStatus("ship-placement");
               displayController.updateScreen();
             });
@@ -265,6 +368,70 @@ export const displayController = (function () {
 
         infoDiv.append(infoDivPlayersDiv, infoDivTextDiv);
         gameDiv.append(infoDiv);
+
+        if (
+          game.getGameStatus() === "active-player-attack" ||
+          game.getGameStatus() === "computer-attack" ||
+          game.getGameStatus() === "game-over"
+        ) {
+          const infoDivTextDivTop = document.querySelector(
+            ".info-div-text-div-top",
+          );
+          const infoDivTextDivTop1 = infoDivTextDivTop.firstElementChild;
+          const infoDivTextDivTop2 = infoDivTextDivTop1.nextElementSibling;
+
+          let sinkTextDiv;
+          let infoDivNextTurn;
+
+          if (game.getGameStatus() === "active-player-attack") {
+            if (activePlayer.lastAttackResult === "SINK") {
+              sinkTextDiv = document.querySelector(".sink-text-div");
+              infoDivNextTurn = sinkTextDiv.nextElementSibling;
+            } else infoDivNextTurn = infoDivTextDivTop.nextElementSibling;
+          } else if (!(game.getGameStatus() === "game-over")) {
+            if (opponent.lastAttackResult === "SINK") {
+              sinkTextDiv = document.querySelector(".sink-text-div");
+              infoDivNextTurn = sinkTextDiv.nextElementSibling;
+            } else infoDivNextTurn = infoDivTextDivTop.nextElementSibling;
+          }
+
+          const gameOverDiv = document.querySelector(".game-over-div");
+          const gameOverButtonsDiv =
+            document.querySelector(".game-over-buttons");
+
+          const infoDivTextDivBottom = document.querySelector(
+            ".info-div-text-div-bottom",
+          );
+
+          if (
+            game.getGameStatus() === "computer-attack" ||
+            (game.getGameStatus() === "game-over" &&
+              game.getWinner().type === "computer")
+          ) {
+            infoDivTextDivTop1.classList.add("hidden");
+          }
+
+          infoDivTextDivTop2.classList.add("hidden");
+
+          if (
+            (game.getGameStatus() === "active-player-attack" &&
+              activePlayer.lastAttackResult === "SINK") ||
+            (game.getGameStatus() === "computer-attack" &&
+              opponent.lastAttackResult === "SINK")
+          ) {
+            sinkTextDiv.classList.add("hidden");
+          }
+
+          if (game.getGameStatus() === "game-over") {
+            gameOverDiv.classList.add("hidden");
+            gameOverButtonsDiv.classList.add("hidden");
+          }
+
+          if (!(game.getGameStatus() === "game-over")) {
+            infoDivNextTurn.classList.add("hidden");
+            infoDivTextDivBottom.classList.add("hidden");
+          }
+        }
 
         // create opponent board side of webpage
 
@@ -347,7 +514,9 @@ export const displayController = (function () {
                 const ids = ["2", "3A", "3B", "4", "5"];
                 ids.forEach((id) => {
                   if (square.includes(id)) {
-                    newSquare.classList.add("is-sunk");
+                    if (square.includes("is sunk"))
+                      newSquare.classList.add("is-sunk");
+                    else newSquare.classList.add("missed-ship");
                     if (id === "3A" || id === "3B") newSquare.textContent = "3";
                     else newSquare.textContent = id;
                   }
@@ -399,10 +568,80 @@ export const displayController = (function () {
           }
           if (opponentGameboard.allShipsSunk()) {
             game.setGameStatus("game-over");
+            game.setWinner(activePlayer);
           } else {
             game.setGameStatus("active-player-attack");
           }
+
           displayController.updateScreen();
+
+          const infoDivTextDivTop = document.querySelector(
+            ".info-div-text-div-top",
+          );
+
+          if (game.getGameStatus() === "game-over") {
+            const infoDivTextDivTop1 = infoDivTextDivTop.firstElementChild;
+            const infoDivTextDivTop2 = infoDivTextDivTop1.nextElementSibling;
+
+            const gameOverDiv = document.querySelector(".game-over-div");
+            const gameOverButtonsDiv =
+              document.querySelector(".game-over-buttons");
+
+            setTimeout(() => {
+              infoDivTextDivTop1.classList.remove("hidden");
+            }, 1000);
+
+            setTimeout(() => {
+              infoDivTextDivTop2.classList.remove("hidden");
+            }, 2500);
+
+            setTimeout(() => {
+              gameOverDiv.classList.remove("hidden");
+            }, 4000);
+
+            setTimeout(() => {
+              gameOverButtonsDiv.classList.remove("hidden");
+            }, 4000);
+          }
+
+          if (game.getGameStatus() === "active-player-attack") {
+            const infoDivTextDivTop2 = infoDivTextDivTop.lastElementChild;
+
+            let sinkTextDiv;
+            let infoDivNextTurn;
+
+            if (activePlayer.lastAttackResult === "SINK") {
+              sinkTextDiv = document.querySelector(".sink-text-div");
+              infoDivNextTurn = sinkTextDiv.nextElementSibling;
+            } else infoDivNextTurn = infoDivTextDivTop.nextElementSibling;
+
+            const infoDivTextDivBottom = document.querySelector(
+              ".info-div-text-div-bottom",
+            );
+
+            setTimeout(() => {
+              infoDivTextDivTop2.classList.remove("hidden");
+            }, 1500);
+
+            if (activePlayer.lastAttackResult === "SINK") {
+              setTimeout(() => {
+                sinkTextDiv.classList.remove("hidden");
+              }, 3000);
+              setTimeout(() => {
+                infoDivNextTurn.classList.remove("hidden");
+              }, 4500);
+              setTimeout(() => {
+                infoDivTextDivBottom.classList.remove("hidden");
+              }, 4500);
+            } else {
+              setTimeout(() => {
+                infoDivNextTurn.classList.remove("hidden");
+              }, 3000);
+              setTimeout(() => {
+                infoDivTextDivBottom.classList.remove("hidden");
+              }, 3000);
+            }
+          }
         }
 
         if (game.getGameStatus() === "player-turn") {
@@ -448,6 +687,48 @@ export const displayController = (function () {
             activePlayerBoardDiv.append(newSquare);
           });
         });
+
+        if (game.getGameStatus() === "computer-attack") {
+          const attackedSquareRow = rowLabelsText.indexOf(
+            opponent.lastAttack[1],
+          );
+          const attackedSquareColumn = columnLabelsText.indexOf(
+            opponent.lastAttack[0],
+          );
+
+          const activePlayerSection = document.querySelector(
+            ".active-player-section",
+          );
+          const attackedSquare = activePlayerSection.querySelector(
+            `[data-row="${attackedSquareRow}"][data-column="${attackedSquareColumn}"]`,
+          );
+
+          if (!(opponent.lastAttackResult === "SINK")) {
+            attackedSquare.classList.add("wait");
+          } else {
+            const ids = ["2", "3A", "3B", "4", "5"];
+            const idArray = activePlayerBoard[attackedSquareRow][
+              attackedSquareColumn
+            ].filter((item) => ids.includes(item));
+            const id = idArray[0];
+            const idSquares = [];
+            activePlayerBoard.forEach((row, index) => {
+              let rowIndex = index;
+              row.forEach((square, index) => {
+                if (Array.isArray(square)) {
+                  if (square.includes(id)) {
+                    idSquares.push(
+                      activePlayerSection.querySelector(
+                        `[data-row="${rowIndex}"][data-column="${index}"]`,
+                      ),
+                    );
+                  }
+                }
+              });
+            });
+            idSquares.forEach((square) => square.classList.add("wait"));
+          }
+        }
 
         // fill in opponent ship count
 

@@ -26,15 +26,23 @@ export const game = (function () {
   const getGameStatus = () => gameStatus;
   const setGameStatus = (value) => (gameStatus = value);
 
-  const startGame = (player1Name, player2name = "Computer", player2type = "computer") => {
+  const startGame = (
+    player1Name,
+    player2name = "Computer",
+    player2type = "computer",
+  ) => {
     player1 = new Player(player1Name, 1, "human");
-    player2 = new Player(player2name, 2, player2type)
+    player2 = new Player(player2name, 2, player2type);
 
     activePlayer = player1;
     opponent = player2;
 
     // displayController.updateScreen();
   };
+
+  let winner;
+  const setWinner = (player) => (winner = player);
+  const getWinner = () => winner;
 
   return {
     getPlayer1,
@@ -45,5 +53,7 @@ export const game = (function () {
     getGameStatus,
     setGameStatus,
     startGame,
+    setWinner,
+    getWinner,
   };
 })();

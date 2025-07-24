@@ -514,7 +514,8 @@ h2 {
   background-color: aqua;
 }
 
-.square {
+.square,
+.square.wait {
   display: grid;
   place-items: center;
   border: 1px solid black;
@@ -571,7 +572,8 @@ h2 {
 }
 
 .active-player-ship,
-.square.position-group-hover {
+.square.position-group-hover,
+.active-player-ship.wait {
   background-color: darkblue;
   color: white;
   border: 2px solid silver;
@@ -580,6 +582,7 @@ h2 {
 .square.position-group-hover {
   cursor: pointer;
 }
+
 
 .hit {
   background-color: red;
@@ -591,9 +594,16 @@ h2 {
   background-color: black;
 }
 
-.is-sunk {
+.is-sunk,
+.is-sunk.wait {
   background-color: gray;
   color: black;
+}
+
+.square.missed-ship {
+  background-color: darkred;
+  color: silver;
+  border: 2px solid silver;
 }
 
 .hover {
