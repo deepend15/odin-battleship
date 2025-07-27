@@ -78,6 +78,18 @@ export function createAndAddOptionsButton() {
       player1Ships.forEach((ship) => (ship.hits = 0));
       player2Ships.forEach((ship) => (ship.hits = 0));
 
+      player1.lastAttack = null;
+      player1.lastAttackResult = null;
+      player2.lastAttack = null;
+      player2.lastAttackResult = null;
+
+      if (player2.type === "computer") {
+        delete player2.attackTurn;
+        delete player2.firstHit;
+        delete player2.hitButNotSunkShips;
+        delete player2.tryingToSink;
+      }
+
       const ids = ["2", "3A", "3B", "4", "5"];
       function containsID(array) {
         let response = false;
