@@ -515,7 +515,8 @@ h2 {
 }
 
 .square,
-.square.wait {
+.square.wait,
+.square.game-over-regular-wait {
   display: grid;
   place-items: center;
   border: 1px solid black;
@@ -584,7 +585,8 @@ h2 {
 }
 
 
-.hit {
+.hit,
+.square.game-over-hit-ship-wait {
   background-color: red;
   color: yellow;
   border: 2px solid silver;
@@ -600,7 +602,7 @@ h2 {
   color: black;
 }
 
-.square.missed-ship {
+.missed-ship {
   background-color: darkred;
   color: silver;
   border: 2px solid silver;

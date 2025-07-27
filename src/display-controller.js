@@ -249,6 +249,11 @@ export const displayController = (function () {
                     const gameOverButtonsDiv =
                       document.querySelector(".game-over-buttons");
 
+                    const computerMissedShips =
+                      document.querySelectorAll(".game-over-regular-wait");
+                    const computerMissedShipsHits =
+                      document.querySelectorAll(".game-over-hit-ship-wait");
+
                     setTimeout(() => {
                       infoDivTextDivTop1.classList.remove("hidden");
                     }, 1000);
@@ -256,6 +261,40 @@ export const displayController = (function () {
                     setTimeout(() => {
                       infoDivTextDivTop2.classList.remove("hidden");
                     }, 2500);
+
+                    setTimeout(() => {
+                      const ids = ["2", "3A", "3B", "4", "5"];
+                      computerMissedShips.forEach((ship) => {
+                        ship.classList.remove("game-over-regular-wait");
+                        ids.forEach((id) => {
+                          if (
+                            opponentBoard[Number(ship.dataset.row)][
+                              Number(ship.dataset.column)
+                            ].includes(id)
+                          ) {
+                            if (id === "3A" || id === "3B")
+                              ship.textContent = "3";
+                            else ship.textContent = id;
+                          }
+                        });
+                      });
+                      if (computerMissedShipsHits !== undefined) {
+                        computerMissedShipsHits.forEach((ship) => {
+                          ship.classList.remove("game-over-hit-ship-wait");
+                          ids.forEach((id) => {
+                            if (
+                              opponentBoard[Number(ship.dataset.row)][
+                                Number(ship.dataset.column)
+                              ].includes(id)
+                            ) {
+                              if (id === "3A" || id === "3B")
+                                ship.textContent = "3";
+                              else ship.textContent = id;
+                            }
+                          });
+                        });
+                      }
+                    }, 4000);
 
                     setTimeout(() => {
                       gameOverDiv.classList.remove("hidden");
@@ -516,9 +555,18 @@ export const displayController = (function () {
                   if (square.includes(id)) {
                     if (square.includes("is sunk"))
                       newSquare.classList.add("is-sunk");
-                    else newSquare.classList.add("missed-ship");
-                    if (id === "3A" || id === "3B") newSquare.textContent = "3";
-                    else newSquare.textContent = id;
+                    else {
+                      newSquare.classList.add("missed-ship");
+                      if (square.includes("hit")) {
+                        newSquare.classList.add("game-over-hit-ship-wait");
+                        newSquare.textContent = "X";
+                      } else newSquare.classList.add("game-over-regular-wait");
+                    }
+                    if (!newSquare.classList.contains("missed-ship")) {
+                      if (id === "3A" || id === "3B")
+                        newSquare.textContent = "3";
+                      else newSquare.textContent = id;
+                    }
                   }
                 });
               } else {
