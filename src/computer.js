@@ -17,6 +17,7 @@ export function computer() {
     const rowLabels = "1,2,3,4,5,6,7,8,9,10".split(",");
 
     function isValid([first, second]) {
+      if (first < 0 || first > 9 || second < 0 || second > 9) return false;
       if (Array.isArray(humanPlayerBoard[first][second])) {
         if (
           humanPlayerBoard[first][second].includes("hit") ||
@@ -97,7 +98,7 @@ export function computer() {
         }
       }
     } else if (
-      computerPlayer.lastAttack === "SINK" &&
+      computerPlayer.lastAttackResult === "SINK" &&
       computerPlayer.tryingToSink
     ) {
       const possibleAttacks = generatePossibleAttacksFromPreviousHit(
@@ -139,7 +140,37 @@ export function computer() {
           nextCoordinates = [lastAttackRow, lastAttackColumn - 1];
           if (isValid(nextCoordinates)) {
             randomCoordinates = nextCoordinates;
-          } else randomCoordinates = [firstHitRow, firstHitColumn - 1];
+          } else {
+            nextCoordinates = [firstHitRow, firstHitColumn - 1];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else {
+              nextCoordinates = [firstHitRow, firstHitColumn + 1];
+              if (isValid(nextCoordinates)) {
+                randomCoordinates = nextCoordinates;
+              } else {
+                const possibleAttacks = generatePossibleAttacksFromPreviousHit(
+                  computerPlayer.firstHit,
+                );
+
+                let randomIndex = Math.floor(Math.random() * 4);
+                let randomAttack = possibleAttacks[randomIndex];
+
+                queue.push(randomAttack);
+
+                while (queue.length !== 0) {
+                  if (queue[0] !== null && isValid(queue[0])) {
+                    randomCoordinates = queue.shift();
+                  } else {
+                    randomIndex = Math.floor(Math.random() * 4);
+                    randomAttack = possibleAttacks[randomIndex];
+                    queue.push(randomAttack);
+                    queue.shift();
+                  }
+                }
+              }
+            }
+          }
         }
       } else if (lastAttackColumn === firstHitColumn) {
         let nextCoordinates = [lastAttackRow + 1, lastAttackColumn];
@@ -150,7 +181,35 @@ export function computer() {
           if (isValid(nextCoordinates)) {
             randomCoordinates = nextCoordinates;
           } else {
-            randomCoordinates = [firstHitRow - 1, firstHitColumn];
+            nextCoordinates = [firstHitRow - 1, firstHitColumn];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else {
+              nextCoordinates = [firstHitRow + 1, firstHitColumn];
+              if (isValid(nextCoordinates)) {
+                randomCoordinates = nextCoordinates;
+              } else {
+                const possibleAttacks = generatePossibleAttacksFromPreviousHit(
+                  computerPlayer.firstHit,
+                );
+
+                let randomIndex = Math.floor(Math.random() * 4);
+                let randomAttack = possibleAttacks[randomIndex];
+
+                queue.push(randomAttack);
+
+                while (queue.length !== 0) {
+                  if (queue[0] !== null && isValid(queue[0])) {
+                    randomCoordinates = queue.shift();
+                  } else {
+                    randomIndex = Math.floor(Math.random() * 4);
+                    randomAttack = possibleAttacks[randomIndex];
+                    queue.push(randomAttack);
+                    queue.shift();
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -161,63 +220,131 @@ export function computer() {
     ) {
       const firstHitRow = computerPlayer.firstHit[0];
       const firstHitColumn = computerPlayer.firstHit[1];
-
-      const ids = ["2", "3A", "3B", "4", "5"];
-      const idArray = humanPlayerBoard[firstHitRow][firstHitColumn].filter(
-        (item) => ids.includes(item),
-      );
-      const id = idArray[0];
-      const hitShipArray = humanPlayerGameboard.ships.filter(
-        (ship) => ship.id === id,
-      );
-      const hitShip = hitShipArray[0];
-
-      if (hitShip.hits === 1) {
-        const possibleAttacks = generatePossibleAttacksFromPreviousHit(
-          computerPlayer.firstHit,
+      if (computerPlayer.hitButNotSunkShips.length > 1) {
+        const lastAttackRow = rowLabels.indexOf(computerPlayer.lastAttack[1]);
+        const lastAttackColumn = columnLabels.indexOf(
+          computerPlayer.lastAttack[0],
         );
 
-        let randomIndex = Math.floor(Math.random() * 4);
-        let randomAttack = possibleAttacks[randomIndex];
-
-        queue.push(randomAttack);
-
-        while (queue.length !== 0) {
-          if (queue[0] !== null && isValid(queue[0])) {
-            randomCoordinates = queue.shift();
-          } else {
-            randomIndex = Math.floor(Math.random() * 4);
-            randomAttack = possibleAttacks[randomIndex];
-            queue.push(randomAttack);
-            queue.shift();
-          }
-        }
-      } else {
-        const hitShipSquares = [];
-        humanPlayerBoard.forEach((row, index) => {
-          let rowIndex = index;
-          row.forEach((square, index) => {
-            if (Array.isArray(square)) {
-              if (square.includes(hitShip.id) && square.includes("hit")) {
-                hitShipSquares.push([rowIndex, index]);
-              }
-            }
-          });
-        });
-        const firstHitShipSquare = hitShipSquares[0];
-        const secondHitShipSquare = hitShipSquares[1];
-
-        if (firstHitShipSquare[0] === secondHitShipSquare[0]) {
+        if (lastAttackRow === firstHitRow) {
           let nextCoordinates = [firstHitRow, firstHitColumn - 1];
           if (isValid(nextCoordinates)) {
             randomCoordinates = nextCoordinates;
-          } else randomCoordinates = [firstHitRow, firstHitColumn + 1];
-        } else if (firstHitShipSquare[1] === secondHitShipSquare[1]) {
+          } else {
+            nextCoordinates = [firstHitRow, firstHitColumn + 1];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else {
+              const possibleAttacks = generatePossibleAttacksFromPreviousHit(
+                computerPlayer.firstHit,
+              );
+
+              let randomIndex = Math.floor(Math.random() * 4);
+              let randomAttack = possibleAttacks[randomIndex];
+
+              queue.push(randomAttack);
+
+              while (queue.length !== 0) {
+                if (queue[0] !== null && isValid(queue[0])) {
+                  randomCoordinates = queue.shift();
+                } else {
+                  randomIndex = Math.floor(Math.random() * 4);
+                  randomAttack = possibleAttacks[randomIndex];
+                  queue.push(randomAttack);
+                  queue.shift();
+                }
+              }
+            }
+          }
+        } else if (lastAttackColumn === firstHitColumn) {
           let nextCoordinates = [firstHitRow - 1, firstHitColumn];
           if (isValid(nextCoordinates)) {
             randomCoordinates = nextCoordinates;
           } else {
-            randomCoordinates = [firstHitRow + 1, firstHitColumn];
+            nextCoordinates = [firstHitRow + 1, firstHitColumn];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else {
+              const possibleAttacks = generatePossibleAttacksFromPreviousHit(
+                computerPlayer.firstHit,
+              );
+
+              let randomIndex = Math.floor(Math.random() * 4);
+              let randomAttack = possibleAttacks[randomIndex];
+
+              queue.push(randomAttack);
+
+              while (queue.length !== 0) {
+                if (queue[0] !== null && isValid(queue[0])) {
+                  randomCoordinates = queue.shift();
+                } else {
+                  randomIndex = Math.floor(Math.random() * 4);
+                  randomAttack = possibleAttacks[randomIndex];
+                  queue.push(randomAttack);
+                  queue.shift();
+                }
+              }
+            }
+          }
+        }
+      } else {
+        const ids = ["2", "3A", "3B", "4", "5"];
+        const idArray = humanPlayerBoard[firstHitRow][firstHitColumn].filter(
+          (item) => ids.includes(item),
+        );
+        const id = idArray[0];
+        const hitShipArray = humanPlayerGameboard.ships.filter(
+          (ship) => ship.id === id,
+        );
+        const hitShip = hitShipArray[0];
+
+        if (hitShip.hits === 1) {
+          const possibleAttacks = generatePossibleAttacksFromPreviousHit(
+            computerPlayer.firstHit,
+          );
+
+          let randomIndex = Math.floor(Math.random() * 4);
+          let randomAttack = possibleAttacks[randomIndex];
+
+          queue.push(randomAttack);
+
+          while (queue.length !== 0) {
+            if (queue[0] !== null && isValid(queue[0])) {
+              randomCoordinates = queue.shift();
+            } else {
+              randomIndex = Math.floor(Math.random() * 4);
+              randomAttack = possibleAttacks[randomIndex];
+              queue.push(randomAttack);
+              queue.shift();
+            }
+          }
+        } else {
+          const hitShipSquares = [];
+          humanPlayerBoard.forEach((row, index) => {
+            let rowIndex = index;
+            row.forEach((square, index) => {
+              if (Array.isArray(square)) {
+                if (square.includes(hitShip.id) && square.includes("hit")) {
+                  hitShipSquares.push([rowIndex, index]);
+                }
+              }
+            });
+          });
+          const firstHitShipSquare = hitShipSquares[0];
+          const secondHitShipSquare = hitShipSquares[1];
+
+          if (firstHitShipSquare[0] === secondHitShipSquare[0]) {
+            let nextCoordinates = [firstHitRow, firstHitColumn - 1];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else randomCoordinates = [firstHitRow, firstHitColumn + 1];
+          } else if (firstHitShipSquare[1] === secondHitShipSquare[1]) {
+            let nextCoordinates = [firstHitRow - 1, firstHitColumn];
+            if (isValid(nextCoordinates)) {
+              randomCoordinates = nextCoordinates;
+            } else {
+              randomCoordinates = [firstHitRow + 1, firstHitColumn];
+            }
           }
         }
       }
@@ -245,9 +372,11 @@ export function computer() {
       humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes(
         "miss",
       )
-    )
+    ) {
       computerPlayer.lastAttackResult = "MISS";
-    if (computerPlayer.tryingToSink) computerPlayer.attackTurn += 1;
+      if (computerPlayer.tryingToSink) computerPlayer.attackTurn += 1;
+    }
+
     if (
       humanPlayerBoard[randomCoordinates[0]][randomCoordinates[1]].includes(
         "hit",
