@@ -30,7 +30,7 @@ export function activateNewGame() {
   newGameDialog.append(chooseNumberOfPlayersDiv);
 
   onePlayerButton.addEventListener("click", showEnterPlayerInfoScreen);
-  // twoPlayerButton.addEventListener("click", showEnterPlayerInfoScreen);
+  twoPlayerButton.addEventListener("click", showEnterPlayerInfoScreen);
 
   newGameDialog.showModal();
 }

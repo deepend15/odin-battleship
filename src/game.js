@@ -1,5 +1,4 @@
 import { Player } from "./player.js";
-// import { displayController } from "./display-controller.js";
 
 export const game = (function () {
   let player1;
@@ -36,8 +35,6 @@ export const game = (function () {
 
     activePlayer = player1;
     opponent = player2;
-
-    // displayController.updateScreen();
   };
 
   let winner;

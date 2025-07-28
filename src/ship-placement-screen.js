@@ -2,6 +2,7 @@ import { game } from "./game.js";
 import { possiblePositions } from "./possible-ship-positions.js";
 import { randomShipPlacement } from "./random-ship-placement.js";
 import { displayController } from "./display-controller.js";
+import { PlaceShipmentScreen } from "./ship-placement-screen-class.js";
 
 export function showShipPlacementScreen(playerScreen) {
   const player = playerScreen.player;
@@ -54,6 +55,9 @@ export function showShipPlacementScreen(playerScreen) {
     case "ending-square":
       line1.textContent =
         "Click an available position on your board to place your ship.";
+      break;
+    case "next-player-ready":
+      line1.textContent = `Click "Continue" to allow ${player2.name} to place their ships!`;
       break;
     case "game-ready":
       line1.textContent = 'Click "Start Game" to start the game!';
@@ -129,7 +133,11 @@ export function showShipPlacementScreen(playerScreen) {
 
   shipPlacementSection.append(shipSelectionDiv);
 
-  if (screenStatus === "game-ready" || screenStatus === "click-ship") {
+  if (
+    screenStatus === "click-ship" ||
+    screenStatus === "game-ready" ||
+    screenStatus === "next-player-ready"
+  ) {
     const shipButtons = document.querySelectorAll(".ship-selection-button");
     shipButtons.forEach((shipButton) => {
       function getMatchingShip() {
@@ -245,6 +253,71 @@ export function showShipPlacementScreen(playerScreen) {
 
       // computerWinGame();
     });
+  } else if (screenStatus === "next-player-ready") {
+    const continueBtn = document.createElement("button");
+    continueBtn.classList.add("start-game-button");
+    continueBtn.textContent = "Continue";
+    shipPlacementButtons.append(continueBtn);
+    continueBtn.addEventListener("click", () => {
+      const mainContainer = document.querySelector(".main-container");
+      const nextPlayerShipPlacementDialog = document.createElement("dialog");
+      nextPlayerShipPlacementDialog.id = "next-player-ship-placement-dialog";
+      const nextPlayerShipPlacementDialogDiv = document.createElement("div");
+      const player1Name = document.createElement("span");
+      player1Name.classList.add("next-player-dialog-player1-name");
+      player1Name.textContent = player.name;
+      const player2Name = document.createElement("span");
+      player2Name.classList.add("next-player-dialog-player2-name");
+      player2Name.textContent = player2.name;
+      const clonedPlayer2Name = player2Name.cloneNode(true);
+      const nextPlayerShipPlacementDialogText1 = document.createElement("p");
+      nextPlayerShipPlacementDialogText1.append(
+        player1Name,
+        ", pass the screen to ",
+      );
+      nextPlayerShipPlacementDialogText1.append(
+        player2Name,
+        " so they can place their ships!",
+      );
+      const nextPlayerShipPlacementDialogText2 = document.createElement("p");
+      nextPlayerShipPlacementDialogText2.append(
+        clonedPlayer2Name,
+        ", click OK when you're ready to continue!",
+      );
+      const nextPlayerShipPlacementDialogButtons =
+        document.createElement("div");
+      nextPlayerShipPlacementDialogButtons.classList.add(
+        "next-player-dialog-buttons",
+      );
+      const cancelBtn = document.createElement("button");
+      cancelBtn.textContent = "Cancel";
+      const okBtn = document.createElement("button");
+      okBtn.textContent = "OK";
+      nextPlayerShipPlacementDialogButtons.append(cancelBtn, okBtn);
+      nextPlayerShipPlacementDialogDiv.append(
+        nextPlayerShipPlacementDialogText1,
+        nextPlayerShipPlacementDialogText2,
+        nextPlayerShipPlacementDialogButtons,
+      );
+      nextPlayerShipPlacementDialog.append(nextPlayerShipPlacementDialogDiv);
+      mainContainer.append(nextPlayerShipPlacementDialog);
+
+      cancelBtn.addEventListener("click", () =>
+        nextPlayerShipPlacementDialog.close(),
+      );
+
+      okBtn.addEventListener("click", () => {
+        nextPlayerShipPlacementDialog.close();
+        nextPlayerShipPlacementDialog.remove();
+        const player2PlaceShipmentScreen = new PlaceShipmentScreen(
+          player2,
+          "click-ship",
+        );
+        showShipPlacementScreen(player2PlaceShipmentScreen);
+      });
+
+      nextPlayerShipPlacementDialog.showModal();
+    });
   } else {
     const shipPlacementRandomBtn = document.createElement("button");
     shipPlacementRandomBtn.classList.add("ship-placement-random-button");
@@ -258,7 +331,13 @@ export function showShipPlacementScreen(playerScreen) {
         });
         playerScreen.activeShip = null;
         playerScreen.selectedStartingSquare = null;
-        playerScreen.status = "game-ready";
+        if (
+          player2.type === "computer" ||
+          (player2.type === "human" && player.id === "Player 2")
+        ) {
+          playerScreen.status = "game-ready";
+        } else playerScreen.status = "next-player-ready";
+
         showShipPlacementScreen(playerScreen);
       });
     } else {
@@ -271,7 +350,12 @@ export function showShipPlacementScreen(playerScreen) {
           playerScreen.selectedStartingSquare = null;
           const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
           if (nonPlacedShips.length === 0) {
-            playerScreen.status = "game-ready";
+            if (
+              player2.type === "computer" ||
+              (player2.type === "human" && player.id === "Player 2")
+            ) {
+              playerScreen.status = "game-ready";
+            } else playerScreen.status = "next-player-ready";
           } else playerScreen.status = "click-ship";
           showShipPlacementScreen(playerScreen);
         });
@@ -287,7 +371,12 @@ export function showShipPlacementScreen(playerScreen) {
           playerScreen.selectedStartingSquare = null;
           const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
           if (nonPlacedShips.length === 0) {
-            playerScreen.status = "game-ready";
+            if (
+              player2.type === "computer" ||
+              (player2.type === "human" && player.id === "Player 2")
+            ) {
+              playerScreen.status = "game-ready";
+            } else playerScreen.status = "next-player-ready";
           } else playerScreen.status = "click-ship";
           showShipPlacementScreen(playerScreen);
         });
@@ -353,7 +442,10 @@ export function showShipPlacementScreen(playerScreen) {
 
       blankBoardDiv.append(newSquare);
 
-      if (screenStatus === "game-ready") {
+      if (
+        screenStatus === "game-ready" ||
+        screenStatus === "next-player-ready"
+      ) {
         if (!(newSquare.textContent === "")) {
           newSquare.classList.add("active-player-ship");
         }
@@ -585,7 +677,12 @@ export function showShipPlacementScreen(playerScreen) {
 
             const nonPlacedShips = playerShips.filter((ship) => !ship.placed);
             if (nonPlacedShips.length === 0) {
-              playerScreen.status = "game-ready";
+              if (
+                player2.type === "computer" ||
+                (player2.type === "human" && player.id === "Player 2")
+              ) {
+                playerScreen.status = "game-ready";
+              } else playerScreen.status = "next-player-ready";
             } else playerScreen.status = "click-ship";
 
             showShipPlacementScreen(playerScreen);
