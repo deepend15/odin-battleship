@@ -11,21 +11,20 @@ export const displayController = (function () {
 
     const gameDiv = document.querySelector(".game-div");
     const topLineMenuDiv = document.querySelector(".top-line-menu-div");
-    const bottomDiv = document.querySelector(".bottom-div");
 
     // create column and row label arrays
 
     const columnLabelsText = "ABCDEFGHIJ".split("");
     const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
 
-    // clear h2, gameDiv, topLineMenuDiv, & opponent ships div
+    // clear h2, gameDiv, topLineMenuDiv, opponent ships div, & board div
 
     if (gameDiv.previousElementSibling.nodeName === "H2") {
       gameDiv.previousElementSibling.remove();
     }
     gameDiv.textContent = "";
     topLineMenuDiv.textContent = "";
-    bottomDiv.textContent = "";
+    if (gameDiv.nextElementSibling) gameDiv.nextElementSibling.remove();
 
     // create initial page load display
 
@@ -88,6 +87,11 @@ export const displayController = (function () {
         );
         showShipPlacementScreen(player1PlaceShipmentScreen);
       } else {
+        const mainContainer = document.querySelector(".main-container");
+        const bottomDiv = document.createElement("div");
+        bottomDiv.classList.add("bottom-div");
+        mainContainer.append(bottomDiv);
+
         // add 'options' button & menu to top line
 
         createAndAddOptionsButton();
@@ -136,7 +140,7 @@ export const displayController = (function () {
           const infoDivTextDivThirdLine = document.createElement("p");
           infoDivTextDivThirdLine.textContent = `-If you hit all of the squares containing one of your opponent's ships, you'll sink that ship!`;
           const infoDivTextDivFourthLine = document.createElement("p");
-          infoDivTextDivFourthLine.textContent = `-Try to sink all of your opponent's ships! The game ends once either you or your opponent sinks all of the other player's ships on the board`;
+          infoDivTextDivFourthLine.textContent = `-The game ends once either you or your opponent sinks all of the other player's ships on the board`;
           infoDivTextDiv.append(
             infoDivTextDivFirstLine,
             infoDivTextDivSecondLine,
@@ -378,7 +382,8 @@ export const displayController = (function () {
             gameOverText1.textContent = "*GAME OVER!*";
             const gameOverText2 = document.createElement("p");
             if (opponentGameboard.allShipsSunk()) {
-              if (opponent.type === "computer") gameOverText2.textContent = `Congrats! You win!`;
+              if (opponent.type === "computer")
+                gameOverText2.textContent = `Congrats! You win!`;
               else gameOverText2.textContent = `${activePlayer.name} wins!`;
             } else gameOverText2.textContent = `Sorry, you lose :(`;
             gameOverDiv.append(gameOverText1, gameOverText2);
@@ -783,7 +788,6 @@ export const displayController = (function () {
 
         // fill in opponent ship count
 
-        bottomDiv.classList.add("bottom-div");
         const bottomDivText = document.createElement("p");
         bottomDivText.textContent = `Opponent ships remaining:`;
         bottomDiv.append(bottomDivText);
@@ -815,7 +819,6 @@ export const displayController = (function () {
 
         if (game.getPlayer2().type === "human") {
           if (game.getGameStatus() === "player-turn") {
-            const mainContainer = document.querySelector(".main-container");
             const nextPlayerTurnDialog = document.createElement("dialog");
             nextPlayerTurnDialog.id = "next-player-turn-dialog";
             const nextPlayerTurnDialogDiv = document.createElement("div");

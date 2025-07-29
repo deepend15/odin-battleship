@@ -47,9 +47,9 @@ h5 {
 }
 
 .main-container {
-  padding: 15px 50px 25px 50px;
+  padding: 25px 50px 25px 50px;
   display: grid;
-  gap: 30px;
+  gap: 35px;
   justify-items: center;
   min-width: min-content;
 }
@@ -139,7 +139,7 @@ h2 {
 .ship-placement-section {
   width: 500px;
   display: grid;
-  gap: 35px;
+  gap: 30px;
   grid-template-rows: repeat(2, max-content);
 }
 
@@ -315,7 +315,7 @@ h2 {
   margin-bottom: 25px;
 }
 
-.info-div-text-div > p:not(:first-child) {
+.info-div-text-div > p:not(:first-child):not(:last-child) {
   margin-bottom: 15px;
 }
 
@@ -494,7 +494,7 @@ h2 {
 .row-labels > p {
   border-top: 1px solid gray;
   border-left: 1px solid gray;
-  width: 45px;
+  width: 42.5px;
 }
 
 .row-labels > p:last-child {
@@ -505,8 +505,8 @@ h2 {
   grid-column: 2;
   grid-row: 2;
   display: grid;
-  height: 450px;
-  width: 450px;
+  height: 425px;
+  width: 425px;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   border: 1px solid black;
