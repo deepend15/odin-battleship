@@ -302,9 +302,10 @@ export function showShipPlacementScreen(playerScreen) {
       nextPlayerShipPlacementDialog.append(nextPlayerShipPlacementDialogDiv);
       mainContainer.append(nextPlayerShipPlacementDialog);
 
-      cancelBtn.addEventListener("click", () =>
-        nextPlayerShipPlacementDialog.close(),
-      );
+      cancelBtn.addEventListener("click", () => {
+        nextPlayerShipPlacementDialog.close();
+        nextPlayerShipPlacementDialog.remove();
+      });
 
       okBtn.addEventListener("click", () => {
         nextPlayerShipPlacementDialog.close();

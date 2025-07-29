@@ -681,20 +681,26 @@ dialog {
   background-color: rgb(0, 0, 0, 0.3);
 }
 
-#next-player-ship-placement-dialog::backdrop {
+#next-player-ship-placement-dialog::backdrop,
+#next-player-turn-dialog::backdrop,
+#last-turn-dialog::backdrop {
   background-color: var(--row-column-blue);
 }
 
-#next-player-ship-placement-dialog {
+#next-player-ship-placement-dialog,
+#next-player-turn-dialog,
+#last-turn-dialog {
   padding: 24px;
   font-size: 2.2rem;
   line-height: 1.5;
   border: 4px aqua;
-  border-style: ridge; 
+  border-style: ridge;
   box-shadow: 0 0 15px 2px silver;
 }
 
-#next-player-ship-placement-dialog > div {
+#next-player-ship-placement-dialog > div,
+#next-player-turn-dialog > div,
+#last-turn-dialog > div {
   display: grid;
   justify-content: center;
   text-align: center;
@@ -702,11 +708,13 @@ dialog {
 }
 
 .next-player-dialog-player1-name,
-.next-player-dialog-player2-name {
+.next-player-dialog-player2-name,
+.ship-sunk-text {
   font-weight: bold;
 }
 
-.next-player-dialog-player1-name {
+.next-player-dialog-player1-name,
+.ship-sunk-text {
   color: red;
 }
 

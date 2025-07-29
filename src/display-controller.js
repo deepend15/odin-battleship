@@ -249,10 +249,12 @@ export const displayController = (function () {
                     const gameOverButtonsDiv =
                       document.querySelector(".game-over-buttons");
 
-                    const computerMissedShips =
-                      document.querySelectorAll(".game-over-regular-wait");
-                    const computerMissedShipsHits =
-                      document.querySelectorAll(".game-over-hit-ship-wait");
+                    const computerMissedShips = document.querySelectorAll(
+                      ".game-over-regular-wait",
+                    );
+                    const computerMissedShipsHits = document.querySelectorAll(
+                      ".game-over-hit-ship-wait",
+                    );
 
                     setTimeout(() => {
                       infoDivTextDivTop1.classList.remove("hidden");
@@ -376,7 +378,8 @@ export const displayController = (function () {
             gameOverText1.textContent = "*GAME OVER!*";
             const gameOverText2 = document.createElement("p");
             if (opponentGameboard.allShipsSunk()) {
-              gameOverText2.textContent = `Congrats! You win!`;
+              if (opponent.type === "computer") gameOverText2.textContent = `Congrats! You win!`;
+              else gameOverText2.textContent = `${activePlayer.name} wins!`;
             } else gameOverText2.textContent = `Sorry, you lose :(`;
             gameOverDiv.append(gameOverText1, gameOverText2);
             const gameOverButtonsDiv = document.createElement("div");
@@ -807,6 +810,114 @@ export const displayController = (function () {
             bottomDiv.append(shipDiv);
           }
         });
+
+        // show pass screen dialog if 2-player game
+
+        if (game.getPlayer2().type === "human") {
+          if (game.getGameStatus() === "player-turn") {
+            const mainContainer = document.querySelector(".main-container");
+            const nextPlayerTurnDialog = document.createElement("dialog");
+            nextPlayerTurnDialog.id = "next-player-turn-dialog";
+            const nextPlayerTurnDialogDiv = document.createElement("div");
+            const activePlayerName = document.createElement("span");
+            activePlayerName.classList.add("next-player-dialog-player2-name");
+            activePlayerName.textContent = activePlayer.name;
+            const clonedActivePlayerName = activePlayerName.cloneNode(true);
+            const clonedActivePlayerName2 = activePlayerName.cloneNode(true);
+            const opponentName = document.createElement("span");
+            opponentName.classList.add("next-player-dialog-player1-name");
+            opponentName.textContent = opponent.name;
+            const line1 = document.createElement("p");
+            line1.append("Next up: ", activePlayerName);
+            const line2 = document.createElement("p");
+            line2.append(
+              opponentName,
+              ", pass the screen to ",
+              clonedActivePlayerName,
+              "!",
+            );
+            const line3 = document.createElement("p");
+            line3.append(
+              clonedActivePlayerName2,
+              ", click OK when you're ready!",
+            );
+            const nextPlayerTurnDialogButtons = document.createElement("div");
+            nextPlayerTurnDialogButtons.classList.add(
+              "next-player-dialog-buttons",
+            );
+
+            const okBtn = document.createElement("button");
+            okBtn.textContent = "OK";
+            nextPlayerTurnDialogButtons.append(okBtn);
+            nextPlayerTurnDialogDiv.append(
+              line1,
+              line2,
+              line3,
+              nextPlayerTurnDialogButtons,
+            );
+            nextPlayerTurnDialog.append(nextPlayerTurnDialogDiv);
+            mainContainer.append(nextPlayerTurnDialog);
+
+            okBtn.addEventListener("click", () => {
+              nextPlayerTurnDialog.close();
+              nextPlayerTurnDialog.remove();
+
+              if (opponent.lastAttack !== null) {
+                const lastTurnDialog = document.createElement("dialog");
+                lastTurnDialog.id = "last-turn-dialog";
+                const lastTurnDialogDiv = document.createElement("div");
+                const lastTurnLine1 = document.createElement("p");
+                const lastTurnDialogOpponentName =
+                  document.createElement("span");
+                lastTurnDialogOpponentName.classList.add(
+                  "next-player-dialog-player1-name",
+                );
+                lastTurnDialogOpponentName.textContent = opponent.name;
+                lastTurnLine1.append(
+                  "Last turn: ",
+                  lastTurnDialogOpponentName,
+                  ` attacked ${opponent.lastAttack.join("")}`,
+                );
+                const lastTurnLine2 = document.createElement("p");
+                let result;
+                if (opponent.lastAttackResult === "SINK") result = "HIT";
+                else result = opponent.lastAttackResult;
+                lastTurnLine2.textContent = "This was a " + result;
+                const lastTurnLine3 = document.createElement("p");
+                const lastTurnLine4 = document.createElement("p");
+                if (opponent.lastAttackResult === "SINK") {
+                  lastTurnLine3.textContent = "*SHIP SUNK!*";
+                  lastTurnLine3.classList.add("ship-sunk-text");
+                  lastTurnLine4.textContent = "Click OK to continue:";
+                } else lastTurnLine3.textContent = "Click OK to continue:";
+                const lastTurnOKBtnDiv = document.createElement("div");
+                lastTurnOKBtnDiv.classList.add("next-player-dialog-buttons");
+                const lastTurnOKBtn = document.createElement("button");
+                lastTurnOKBtn.textContent = "OK";
+                lastTurnOKBtnDiv.append(lastTurnOKBtn);
+                lastTurnDialogDiv.append(
+                  lastTurnLine1,
+                  lastTurnLine2,
+                  lastTurnLine3,
+                  lastTurnOKBtnDiv,
+                );
+                if (opponent.lastAttackResult === "SINK")
+                  lastTurnOKBtnDiv.before(lastTurnLine4);
+                lastTurnDialog.append(lastTurnDialogDiv);
+                mainContainer.append(lastTurnDialog);
+
+                lastTurnOKBtn.addEventListener("click", () => {
+                  lastTurnDialog.close();
+                  lastTurnDialog.remove();
+                });
+
+                lastTurnDialog.showModal();
+              }
+            });
+
+            nextPlayerTurnDialog.showModal();
+          }
+        }
       }
     }
   };
