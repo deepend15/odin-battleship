@@ -17,7 +17,7 @@ export const displayController = (function () {
     const columnLabelsText = "ABCDEFGHIJ".split("");
     const rowLabelsText = "1,2,3,4,5,6,7,8,9,10".split(",");
 
-    // clear h2, gameDiv, topLineMenuDiv, opponent ships div, & board div
+    // clear h2, gameDiv, topLineMenuDiv, opponent ships div, & bottom div
 
     if (gameDiv.previousElementSibling.nodeName === "H2") {
       gameDiv.previousElementSibling.remove();
