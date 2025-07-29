@@ -198,6 +198,7 @@ h2 {
   width: max-content;
   padding: 8px 10px;
   background-color: var(--row-column-blue);
+  color: black;
   border: 2px dotted darkblue;
   border-radius: 8px;
   display: flex;
@@ -410,6 +411,7 @@ h2 {
   background-color: var(--row-column-blue);
   border: 2px outset aqua;
   border-radius: 25px;
+  color: black;
 }
 
 .game-over-buttons > button,
