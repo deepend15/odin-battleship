@@ -1,4 +1,5 @@
 import { game } from "./game.js";
+import { possiblePositions } from "./possible-ship-positions.js";
 
 export function computer() {
   let computerPlayer;
@@ -349,10 +350,60 @@ export function computer() {
         }
       }
     } else {
+      const humanPlayerShips = humanPlayer.gameboard.ships;
+      const nonSunkHumanPlayerShips = humanPlayerShips.filter(
+        (ship) => !ship.isSunk(),
+      );
+      const smallestShipFirstArray = [nonSunkHumanPlayerShips[0]];
+
+      for (let i = 0; i < nonSunkHumanPlayerShips.length - 1; i++) {
+        const currentShip = nonSunkHumanPlayerShips[i + 1];
+        const firstShipInSmallShipArray = smallestShipFirstArray[0];
+        if (currentShip.length <= firstShipInSmallShipArray.length) {
+          smallestShipFirstArray.unshift(currentShip);
+        } else smallestShipFirstArray.push(currentShip);
+      }
+
+      const smallestShipFirstArrayShip = smallestShipFirstArray[0];
+      const smallestShipArray = humanPlayerShips.filter(
+        (ship) => ship.id === smallestShipFirstArrayShip.id,
+      );
+      const smallestShip = smallestShipArray[0];
+
+      function possiblePositionsCanFitAtLeastOneSmallestShip(coordinates) {
+        const coordinatePossiblePositionsObject = possiblePositions(
+          smallestShip,
+          coordinates,
+        );
+        const coordinatePossiblePositions = Object.values(
+          coordinatePossiblePositionsObject,
+        );
+
+        let response = false;
+
+        for (let i = 0; i < coordinatePossiblePositions.length; i++) {
+          const currentPossiblePosition = coordinatePossiblePositions[i];
+          if (currentPossiblePosition !== null) {
+            const invalidCoordinates = currentPossiblePosition.filter(
+              (coordinates) => !isValid(coordinates),
+            );
+            if (invalidCoordinates.length === 0) {
+              response = true;
+              break;
+            }
+          }
+        }
+
+        return response;
+      }
+
       generateRandomCoordinates();
 
       while (queue.length !== 0) {
-        if (isValid(queue[0])) {
+        if (
+          isValid(queue[0]) &&
+          possiblePositionsCanFitAtLeastOneSmallestShip(queue[0])
+        ) {
           randomCoordinates = queue.shift();
         } else {
           generateRandomCoordinates();
