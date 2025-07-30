@@ -763,16 +763,11 @@ dialog {
 }
 
 #new-game-dialog > form > p {
-  display: grid;
-  grid-template-columns: max-content 65%;
+  display: flex;
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-}
-
-#new-game-dialog > form > p:not(:first-child) {
-  margin-top: 10px;
-  margin-bottom: 5px;
+  font-size: 2rem;
 }
 
 #p1-name,
