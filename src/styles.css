@@ -600,8 +600,7 @@ h2 {
   background-color: black;
 }
 
-.is-sunk,
-.is-sunk.wait {
+.is-sunk {
   background-color: gray;
   color: black;
 }

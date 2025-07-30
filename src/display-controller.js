@@ -325,12 +325,25 @@ export const displayController = (function () {
                       ".info-div-text-div-bottom",
                     );
 
-                    const waitSquares = document.querySelectorAll(".wait");
-                    setTimeout(() => {
-                      waitSquares.forEach((square) =>
-                        square.classList.remove("wait"),
-                      );
-                    }, 1000);
+                    if (opponent.lastAttackResult === "SINK") {
+                      const sunkShipsWait =
+                        document.querySelectorAll(".sunk-ship-wait");
+                      setTimeout(() => {
+                        sunkShipsWait.forEach((ship) => {
+                          ship.classList.remove("sunk-ship-wait");
+                          ship.classList.add("is-sunk");
+                          if (!ship.classList.contains("hit"))
+                            ship.classList.add("hit");
+                        });
+                      }, 1000);
+                    } else {
+                      const waitSquares = document.querySelectorAll(".wait");
+                      setTimeout(() => {
+                        waitSquares.forEach((square) =>
+                          square.classList.remove("wait"),
+                        );
+                      }, 1000);
+                    }
 
                     setTimeout(() => {
                       infoDivTextDivTop1.classList.remove("hidden");
@@ -731,7 +744,29 @@ export const displayController = (function () {
                 ids.forEach((id) => {
                   if (square.includes(id)) {
                     newSquare.classList.add("active-player-ship");
-                    if (square.includes("hit")) newSquare.classList.add("hit");
+                    if (square.includes("hit")) {
+                      // this is to account for class timeout adjustments after computer sinks a ship
+                      if (
+                        game.getGameStatus() === "computer-attack" &&
+                        opponent.lastAttackResult === "SINK"
+                      ) {
+                        const lastAttackRow = rowLabelsText.indexOf(
+                          opponent.lastAttack[1],
+                        );
+                        const lastAttackColumn = columnLabelsText.indexOf(
+                          opponent.lastAttack[0],
+                        );
+
+                        if (
+                          !(
+                            lastAttackRow === rowIndex &&
+                            lastAttackColumn === index
+                          )
+                        ) {
+                          newSquare.classList.add("hit");
+                        }
+                      } else newSquare.classList.add("hit");
+                    }
                     if (square.includes("is sunk"))
                       newSquare.classList.add("is-sunk");
                     if (id === "3A" || id === "3B") newSquare.textContent = "3";
@@ -771,7 +806,7 @@ export const displayController = (function () {
             activePlayerBoard.forEach((row, index) => {
               let rowIndex = index;
               row.forEach((square, index) => {
-                if (Array.isArray(square)) {
+                if (Array.isArray(square) === true) {
                   if (square.includes(id)) {
                     idSquares.push(
                       activePlayerSection.querySelector(
@@ -782,7 +817,10 @@ export const displayController = (function () {
                 }
               });
             });
-            idSquares.forEach((square) => square.classList.add("wait"));
+            idSquares.forEach((square) => {
+              square.classList.add("sunk-ship-wait");
+              square.classList.remove("is-sunk");
+            });
           }
         }
 
