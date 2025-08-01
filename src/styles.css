@@ -764,10 +764,18 @@ dialog {
 
 #new-game-dialog > form > p {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
   justify-content: space-between;
   font-size: 2rem;
+}
+
+#new-game-dialog > form > p > label {
+  flex-shrink: 0;
+}
+
+#new-game-dialog > form > p > input {
+  width: 70%;
 }
 
 #p1-name,
