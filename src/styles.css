@@ -603,6 +603,7 @@ h2 {
 .is-sunk {
   background-color: gray;
   color: black;
+  border: 2px solid silver;
 }
 
 .missed-ship {
